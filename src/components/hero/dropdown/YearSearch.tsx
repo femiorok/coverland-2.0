@@ -37,6 +37,7 @@ export function YearSearch({
   const { query, setQuery } = queryObj;
 
   const isDisabled = !query.type && !currentSelection;
+  console.log(currentSelection, query, isDisabled);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

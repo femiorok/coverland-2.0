@@ -1,9 +1,3 @@
-//Try not to manually change this file. If you need to update the types,
-//generate them in the Supabase dashboard:
-//https://supabase.com/dashboard/project/zrfupzyytvnaavkuhhtq/api?page=tables-intro
-
-//Place any custom types you want to use in /index.ts
-
 export type Json =
   | string
   | number
@@ -15,6 +9,39 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      MakeProductTypeLink: {
+        Row: {
+          id: number;
+          make_id: number | null;
+          product_type_id: number | null;
+        };
+        Insert: {
+          id?: number;
+          make_id?: number | null;
+          product_type_id?: number | null;
+        };
+        Update: {
+          id?: number;
+          make_id?: number | null;
+          product_type_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'MakeProductTypeLink_make_id_fkey';
+            columns: ['make_id'];
+            isOneToOne: false;
+            referencedRelation: 'Vehicle-Makes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'MakeProductTypeLink_product_type_id_fkey';
+            columns: ['product_type_id'];
+            isOneToOne: false;
+            referencedRelation: 'Product-Types';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
       Makes: {
         Row: {
           id: number;
@@ -29,6 +56,39 @@ export interface Database {
           make?: string;
         };
         Relationships: [];
+      };
+      MakeYearLink: {
+        Row: {
+          id: number;
+          make_id: number | null;
+          year_id: number | null;
+        };
+        Insert: {
+          id?: number;
+          make_id?: number | null;
+          year_id?: number | null;
+        };
+        Update: {
+          id?: number;
+          make_id?: number | null;
+          year_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'MakeYearLink_make_id_fkey';
+            columns: ['make_id'];
+            isOneToOne: false;
+            referencedRelation: 'Vehicle-Makes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'MakeYearLink_year_id_fkey';
+            columns: ['year_id'];
+            isOneToOne: false;
+            referencedRelation: 'Vehicle-Years';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       Models: {
         Row: {
@@ -55,6 +115,186 @@ export interface Database {
             referencedColumns: ['make'];
           }
         ];
+      };
+      Orders: {
+        Row: {
+          billing_address: Json | null;
+          discount_total: number | null;
+          email: string | null;
+          first_name: string | null;
+          id: number;
+          last_name: string | null;
+          order_id: string | null;
+          order_placed: string | null;
+          order_subtotal: number | null;
+          order_total: number | null;
+          phone_number: string | null;
+          shipping_address: Json | null;
+          shipping_method: string | null;
+          shipping_total: number | null;
+          user_cart: Json | null;
+        };
+        Insert: {
+          billing_address?: Json | null;
+          discount_total?: number | null;
+          email?: string | null;
+          first_name?: string | null;
+          id?: number;
+          last_name?: string | null;
+          order_id?: string | null;
+          order_placed?: string | null;
+          order_subtotal?: number | null;
+          order_total?: number | null;
+          phone_number?: string | null;
+          shipping_address?: Json | null;
+          shipping_method?: string | null;
+          shipping_total?: number | null;
+          user_cart?: Json | null;
+        };
+        Update: {
+          billing_address?: Json | null;
+          discount_total?: number | null;
+          email?: string | null;
+          first_name?: string | null;
+          id?: number;
+          last_name?: string | null;
+          order_id?: string | null;
+          order_placed?: string | null;
+          order_subtotal?: number | null;
+          order_total?: number | null;
+          phone_number?: string | null;
+          shipping_address?: Json | null;
+          shipping_method?: string | null;
+          shipping_total?: number | null;
+          user_cart?: Json | null;
+        };
+        Relationships: [];
+      };
+      'Product-Promo-Codes': {
+        Row: {
+          created_at: string;
+          discount_type: string | null;
+          discount_value: number | null;
+          expiry_date: string | null;
+          id: number;
+          level: string | null;
+          minimum_purchase: number | null;
+          name: string | null;
+          product_skus: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          discount_type?: string | null;
+          discount_value?: number | null;
+          expiry_date?: string | null;
+          id?: number;
+          level?: string | null;
+          minimum_purchase?: number | null;
+          name?: string | null;
+          product_skus?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          discount_type?: string | null;
+          discount_value?: number | null;
+          expiry_date?: string | null;
+          id?: number;
+          level?: string | null;
+          minimum_purchase?: number | null;
+          name?: string | null;
+          product_skus?: string | null;
+        };
+        Relationships: [];
+      };
+      'Product-Reviews': {
+        Row: {
+          created_at: string;
+          id: number;
+          make: string | null;
+          model: string | null;
+          product_name: string | null;
+          product_type: string | null;
+          rating_stars: string | null;
+          review_author: string | null;
+          review_description: string | null;
+          review_image: string | null;
+          review_title: string | null;
+          sku: string | null;
+          sku_id: number | null;
+          submodel1: string | null;
+          submodel2: string | null;
+          type: string | null;
+          year_generation: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          make?: string | null;
+          model?: string | null;
+          product_name?: string | null;
+          product_type?: string | null;
+          rating_stars?: string | null;
+          review_author?: string | null;
+          review_description?: string | null;
+          review_image?: string | null;
+          review_title?: string | null;
+          sku?: string | null;
+          sku_id?: number | null;
+          submodel1?: string | null;
+          submodel2?: string | null;
+          type?: string | null;
+          year_generation?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          make?: string | null;
+          model?: string | null;
+          product_name?: string | null;
+          product_type?: string | null;
+          rating_stars?: string | null;
+          review_author?: string | null;
+          review_description?: string | null;
+          review_image?: string | null;
+          review_title?: string | null;
+          sku?: string | null;
+          sku_id?: number | null;
+          submodel1?: string | null;
+          submodel2?: string | null;
+          type?: string | null;
+          year_generation?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'Product-Reviews_make_fkey';
+            columns: ['make'];
+            isOneToOne: false;
+            referencedRelation: 'Makes';
+            referencedColumns: ['make'];
+          },
+          {
+            foreignKeyName: 'Product-Reviews_sku_fkey';
+            columns: ['sku'];
+            isOneToOne: false;
+            referencedRelation: 'Skus';
+            referencedColumns: ['sku'];
+          }
+        ];
+      };
+      'Product-Types': {
+        Row: {
+          id: number;
+          name: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+        };
+        Relationships: [];
       };
       Products: {
         Row: {
@@ -140,7 +380,7 @@ export interface Database {
           feature_sp_gr_1to: string | null;
           feature_ss_gr_1to: string | null;
           fk: number;
-          Generation: string | null;
+          generation_default: string | null;
           listpage_gallery_image: string | null;
           make: string | null;
           make_id: number | null;
@@ -301,7 +541,7 @@ export interface Database {
           feature_sp_gr_1to?: string | null;
           feature_ss_gr_1to?: string | null;
           fk: number;
-          Generation?: string | null;
+          generation_default?: string | null;
           listpage_gallery_image?: string | null;
           make?: string | null;
           make_id?: number | null;
@@ -462,7 +702,7 @@ export interface Database {
           feature_sp_gr_1to?: string | null;
           feature_ss_gr_1to?: string | null;
           fk?: number;
-          Generation?: string | null;
+          generation_default?: string | null;
           listpage_gallery_image?: string | null;
           make?: string | null;
           make_id?: number | null;
@@ -548,17 +788,24 @@ export interface Database {
           display_color: string | null;
           display_id: string | null;
           feature: string | null;
+          generation_end: number | null;
+          generation_start: number | null;
           make: string | null;
+          make_slug: string | null;
           model: string | null;
+          model_slug: string | null;
           msrp: string | null;
           price: string | null;
           product: string | null;
           product_name: string | null;
           product_type: string | null;
+          product_url_slug: string | null;
           sku: string;
           sku_suffix: string | null;
           submodel1: string | null;
+          submodel1_slug: string | null;
           submodel2: string | null;
+          submodel2_slug: string | null;
           type: string | null;
           year_generation: string | null;
         };
@@ -567,17 +814,24 @@ export interface Database {
           display_color?: string | null;
           display_id?: string | null;
           feature?: string | null;
+          generation_end?: number | null;
+          generation_start?: number | null;
           make?: string | null;
+          make_slug?: string | null;
           model?: string | null;
+          model_slug?: string | null;
           msrp?: string | null;
           price?: string | null;
           product?: string | null;
           product_name?: string | null;
           product_type?: string | null;
+          product_url_slug?: string | null;
           sku: string;
           sku_suffix?: string | null;
           submodel1?: string | null;
+          submodel1_slug?: string | null;
           submodel2?: string | null;
+          submodel2_slug?: string | null;
           type?: string | null;
           year_generation?: string | null;
         };
@@ -586,21 +840,61 @@ export interface Database {
           display_color?: string | null;
           display_id?: string | null;
           feature?: string | null;
+          generation_end?: number | null;
+          generation_start?: number | null;
           make?: string | null;
+          make_slug?: string | null;
           model?: string | null;
+          model_slug?: string | null;
           msrp?: string | null;
           price?: string | null;
           product?: string | null;
           product_name?: string | null;
           product_type?: string | null;
+          product_url_slug?: string | null;
           sku?: string;
           sku_suffix?: string | null;
           submodel1?: string | null;
+          submodel1_slug?: string | null;
           submodel2?: string | null;
+          submodel2_slug?: string | null;
           type?: string | null;
           year_generation?: string | null;
         };
         Relationships: [];
+      };
+      ProductTypeYearLink: {
+        Row: {
+          id: number;
+          product_type_id: number | null;
+          vehicle_year_id: number | null;
+        };
+        Insert: {
+          id?: number;
+          product_type_id?: number | null;
+          vehicle_year_id?: number | null;
+        };
+        Update: {
+          id?: number;
+          product_type_id?: number | null;
+          vehicle_year_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'ProductTypeYearLink_product_type_id_fkey';
+            columns: ['product_type_id'];
+            isOneToOne: false;
+            referencedRelation: 'Product-Types';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'ProductTypeYearLink_vehicle_year_id_fkey';
+            columns: ['vehicle_year_id'];
+            isOneToOne: false;
+            referencedRelation: 'Vehicle-Years';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       Skus: {
         Row: {
@@ -636,6 +930,42 @@ export interface Database {
             referencedColumns: ['id'];
           }
         ];
+      };
+      'Vehicle-Makes': {
+        Row: {
+          default_make_images: string | null;
+          id: number;
+          name: string;
+        };
+        Insert: {
+          default_make_images?: string | null;
+          id?: number;
+          name: string;
+        };
+        Update: {
+          default_make_images?: string | null;
+          id?: number;
+          name?: string;
+        };
+        Relationships: [];
+      };
+      'Vehicle-Years': {
+        Row: {
+          created_at: string;
+          id: number;
+          year: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          year?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          year?: string | null;
+        };
+        Relationships: [];
       };
     };
     Views: {

@@ -1,31 +1,71 @@
-import { fetchPDPData } from '@/lib/db';
-import { getNewestModel, modelToSlug } from '@/lib/utils';
+import { fetchPDPData, fetchPDPDataWithQuery } from '@/lib/db';
 import Image from 'next/image';
-import { GoDotFill } from 'react-icons/go';
-import { IoRibbonSharp } from 'react-icons/io5';
-import { FaShippingFast, FaThumbsUp } from 'react-icons/fa';
-import { MdSupportAgent } from 'react-icons/md';
-import Link from 'next/link';
 import CarSelector from '@/components/PDP/CarSelector';
 import KeepDry from '@/images/PDP/keep_dry.webp';
 import LayerImg from '@/images/PDP/layer_breakdown.webp';
 import Material from '@/images/PDP/material-right.webp';
 import ZeroLeaks from '@/images/PDP/zero_leaks.webp';
 
-export type TPDPParams = { productType: string; product: string[] };
+export type TPDPPathParams = { productType: string; product: string[] };
 
-export default async function ProductPDP({ params }: { params: TPDPParams }) {
-  const { product } = params;
-  const model = modelToSlug(product[1]);
-  const data = await fetchPDPData(model);
+export type TPDPQueryParams = {
+  year: string | undefined;
+  submodel: string | undefined;
+  second_submodel: string | undefined;
+};
 
-  if (!data) return;
-  const inStockData = data.filter((item) => item.msrp);
+export default async function ProductPDP({
+  params: pathParams,
+  searchParams,
+}: {
+  params: TPDPPathParams;
+  searchParams: TPDPQueryParams;
+}) {
+  const initData = await fetchPDPData(pathParams);
+  const dataWithQueries = await fetchPDPDataWithQuery(searchParams, pathParams);
 
-  console.log(data);
+  const data = dataWithQueries?.length ? dataWithQueries : initData;
+
+  if (!data) return null;
+  const modelData = data?.filter((item) => item.msrp);
+
+  const modelDataByYear = searchParams.year
+    ? modelData.filter((model) => {
+        const parsedYearParam = parseInt(searchParams.year as string);
+        const generationStart = model?.generation_start ?? -1;
+        const generationEnd = model?.generation_end;
+
+        //2024 models will have a null value for generationEnd
+        return (
+          (generationEnd === null &&
+            generationStart !== -1 &&
+            generationStart <= parsedYearParam) ||
+          (generationEnd !== null &&
+            generationStart !== null &&
+            generationEnd >= parsedYearParam &&
+            generationStart <= parsedYearParam)
+        );
+      })
+    : modelData;
+
+  const modelDataBySubmodel = searchParams.submodel
+    ? modelDataByYear.filter((model) => {
+        model.submodel1_slug === searchParams.submodel ??
+          model.submodel2_slug === searchParams.submodel;
+      })
+    : modelDataByYear;
+
+  console.log(modelDataBySubmodel, searchParams.submodel);
+
+  const dataByParams = !!modelDataBySubmodel?.length
+    ? modelDataBySubmodel
+    : modelDataByYear;
+
+  console.log(dataByParams);
+
   return (
     <>
-      <CarSelector data={inStockData} />
+      <CarSelector modelData={dataByParams} pathParams={pathParams} />
       <div
         id="product-details"
         className="w-full h-auto flex flex-col justify-center items-center max-w-[1440px] py-4 lg:py-20 px-4 md:px-20"

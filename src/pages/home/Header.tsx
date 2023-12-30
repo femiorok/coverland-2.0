@@ -5,6 +5,7 @@ import { Search, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import Models from '@/data/car_year_make_model_list.json';
 import { useState } from 'react';
+import Cart from '@/components/header/Cart';
 
 function Header() {
   const [autocomplete, setAutocomplete] = useState(Models);
@@ -33,8 +34,8 @@ function Header() {
           </div>
           <div className="self-center flex gap-3.5 my-auto items-start">
             <div className="items-stretch flex justify-between gap-5">
-              <ShoppingCart size={32} />
-              <User size={32} />
+              <Cart />
+              {/* <User size={32} /> */}
             </div>
           </div>
         </div>

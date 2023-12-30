@@ -21,6 +21,8 @@ import { YearSearch } from './YearSearch';
 import { TypeSearch } from './TypeSearch';
 import { MakeSearch } from './MakeSearch';
 import { ModelSearch } from './ModelSearch';
+import { Router } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export type TQuery = {
   year?: string;
@@ -33,6 +35,7 @@ export function DropdownSearch() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
   const [query, setQuery] = React.useState<TQuery>({});
+  const router = useRouter();
 
   const years = Array.from({ length: 100 }, (_, i) => 1924 + i);
   const queryObj = {
@@ -40,15 +43,47 @@ export function DropdownSearch() {
     setQuery,
   };
 
+  const goToProductPage = (query: TQuery) => {
+    if (!query) return null;
+    const slugify = (str: string) => {
+      if (!str) return null;
+      return str
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    };
+
+    const convertToUrl = (obj: TQuery) => {
+      if (!query) return null;
+
+      const { type, year, make, model } = query;
+      let url = `/${slugify(type)}/${slugify(make)}/${slugify(model)}`;
+      if (year) {
+        url += `?year=${encodeURIComponent(year)}`;
+      }
+      return url;
+    };
+
+    const url = convertToUrl(query);
+    router.push(url);
+  };
+
   console.log('obj', queryObj);
 
   return (
     <div className="flex gap-2">
-      <TypeSearch />
+      <TypeSearch queryObj={queryObj} />
       <YearSearch queryObj={queryObj} />
       <MakeSearch queryObj={queryObj} />
       <ModelSearch queryObj={queryObj} />
-      <Button className="h-[60px] text-lg">Go</Button>
+      <Button
+        className="h-[60px] text-lg"
+        onClick={() => goToProductPage(query)}
+      >
+        Go
+      </Button>
     </div>
   );
 }

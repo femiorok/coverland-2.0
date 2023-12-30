@@ -22,7 +22,7 @@ const useCarSelector = () => {
   const [selectedSubmodel, setSelectedSubmodel] = useState<string | null>(null);
   const [selectedSecondSubmodel, setSelectedSecondSubmodel] = useState<
     string | null
-  >();
+  >(null);
 
   useEffect(() => {
     setSelectedMake(null);

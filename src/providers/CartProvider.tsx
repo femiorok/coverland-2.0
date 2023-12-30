@@ -1,30 +1,30 @@
-// import React, { createContext, useContext } from 'react';
-// import useCart from '@/lib/cart/useCart';
+import React, { createContext, useContext } from 'react';
+import useCart, { TCartItems } from '@/lib/cart/useCart';
 
-// const defaultCartValue = {
-//   cartItems: [],
-//   addItemToCart: () => {},
-//   removeItemFromCart: () => {},
-//   adjustItemQuantity: () => {},
-//   getTotalPrice: () => 0,
-// };
+const defaultCartValue = {
+  cartItems: [] as TCartItems[],
+  addToCart: (item: TCartItems) => {},
+  removeItemFromCart: (sku: TCartItems['sku']) => {},
+  adjustItemQuantity: (sku: string, quantity: number) => {},
+  getTotalPrice: (): number => 0,
+};
 
-// const CartContext = createContext(defaultCartValue);
+const CartContext = createContext(defaultCartValue);
 
-// // Step 2: Create the Provider Component
-// const CartProvider = ({ children }) => {
-//   const cart = useCart();
+const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const cart = useCart();
+  console.log(cart);
 
-//   return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;
-// };
+  return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;
+};
 
-// // Hook to use cart context
-// const useCartContext = () => {
-//   const context = useContext(CartContext);
-//   if (!context) {
-//     throw new Error('useCartContext must be used within a CartProvider');
-//   }
-//   return context;
-// };
+// Hook to use cart context
+const useCartContext = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCartContext must be used within a CartProvider');
+  }
+  return context;
+};
 
-// export { CartProvider, useCartContext };
+export { CartProvider, useCartContext };

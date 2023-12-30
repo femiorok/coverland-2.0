@@ -18,8 +18,16 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
+import { TQuery } from './DropdownSearch';
 
-export function TypeSearch() {
+export function TypeSearch({
+  queryObj,
+}: {
+  queryObj: {
+    query: TQuery;
+    setQuery: React.Dispatch<React.SetStateAction<TQuery>>;
+  };
+}) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
   const [query, setQuery] = React.useState({});
@@ -27,7 +35,8 @@ export function TypeSearch() {
   const types = ['Car Covers', 'SUV Covers', 'Truck Covers'];
 
   const years = Array.from({ length: 100 }, (_, i) => 1924 + i);
-  const onFocus = open ? 'ring-4 ring-red-700' : '';
+  const onFocus = open ? 'ring-4 ring-[#BE1B1B]' : '';
+  const { query: queryProp, setQuery: setQueryProp } = queryObj;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -50,9 +59,9 @@ export function TypeSearch() {
                 key={`type-${type}-${i}`}
                 value={type}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
+                  setValue(type);
                   setOpen(false);
-                  setQuery({ type: currentValue });
+                  setQueryProp({ type: currentValue });
                 }}
                 className="text-lg"
               >

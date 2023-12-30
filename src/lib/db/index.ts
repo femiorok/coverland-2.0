@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database } from './types';
-import { TPDPParams } from '@/app/[productType]/[...product]/page';
+import { Database, Tables } from './types';
+import {
+  TPDPPathParams,
+  TPDPQueryParams,
+} from '@/app/[productType]/[...product]/page';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? '';
@@ -87,12 +90,53 @@ export async function fetchFilteredProducts<T extends TableRow>({
   }
 }
 
-export async function fetchPDPData(model: string) {
-  console.log(model);
+export async function fetchPDPData(pathParams: TPDPPathParams) {
+  const modelFromPath = pathParams?.product[1];
+  const makeFromPath = pathParams?.product[0];
+
   const { data, error } = await supabase
     .from('Products-2024')
     .select('*')
-    .eq('model', model);
+    .eq('make_slug', makeFromPath)
+    .eq('model_slug', modelFromPath);
+
+  console.log('fetching with path params', data?.length, modelFromPath);
+  if (error) {
+    console.log(error);
+  }
+  return data;
+}
+
+export async function fetchPDPDataWithQuery(
+  queryParams: TPDPQueryParams,
+  params: TPDPPathParams
+) {
+  if (!queryParams?.year) return null;
+
+  const make = params?.product[0];
+  const model = params?.product[1];
+  const year = queryParams?.year;
+  const submodel1 = queryParams?.submodel;
+  const submodel2 = queryParams?.second_submodel;
+
+  let fetch = supabase
+    .from('Products-2024')
+    .select()
+    .eq('model_slug', model)
+    .eq('make_slug', make)
+    .textSearch('year_range', year);
+
+  if (submodel1) {
+    fetch = fetch.textSearch('submodel1_slug', submodel1);
+  }
+
+  if (submodel2) {
+    fetch = fetch.textSearch('submodel2_slug', submodel2);
+  }
+
+  const { data, error } = await fetch;
+
+  console.log('fetching with query params', data?.length);
   if (error) {
     console.log(error);
   }

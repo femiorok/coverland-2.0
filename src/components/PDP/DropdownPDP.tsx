@@ -26,12 +26,14 @@ export type TQuery = {
 
 export function DropdownPDP({
   currentSelection,
+  modelData,
 }: {
-  currentSelection: TProductData;
+  currentSelection: TProductData | undefined;
+  modelData: TProductData[];
 }) {
   return (
     <div className="flex flex-col gap-2 w-[400px]">
-      <SubDropdowns currentSelection={currentSelection} />
+      <SubDropdowns currentSelection={currentSelection} modelData={modelData} />
     </div>
   );
 }

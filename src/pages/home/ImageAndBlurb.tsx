@@ -16,7 +16,7 @@ export default function ImageAndBlurb() {
         </div>
         <div className="flex flex-col justify-center items-start w-full md:w-3/4 lg:w-2/4 lg:pr-16 mt-5 mb-5">
           <h1 className="text-2xl font-extrabold uppercase pb-10 pt-10 md:text-5xl text-dark w-full text-center md:w-auto lg:text-left">
-            The <span className="text-red">Coverland</span> Difference
+            The <span className="text-[#BE1B1B]">Coverland</span> Difference
           </h1>
           <p className="text-dark">
             For every car enthusiast, owning a car is a considerable investment.

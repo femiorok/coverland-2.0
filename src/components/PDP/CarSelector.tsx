@@ -7,7 +7,6 @@ import {
   getNewestModel,
   getUniqueYearGenerations,
   groupProductsBy,
-  modelToSlug,
 } from '@/lib/utils';
 import Image from 'next/image';
 import { GoDotFill } from 'react-icons/go';
@@ -18,63 +17,124 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { BsBoxSeam, BsGift, BsInfoCircle } from 'react-icons/bs';
 import { DropdownPDP } from './DropdownPDP';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { Button } from '../ui/button';
+import useCart from '@/lib/cart/useCart';
+import { ToastAction } from '@/components/ui/toast';
+import { useToast } from '@/components/ui/use-toast';
+import { useCartContext } from '@/providers/CartProvider';
+import { TPDPPathParams } from '@/app/[productType]/[...product]/page';
+import { match } from 'assert';
+import { get } from 'http';
 
-function CarSelector({ data }: { data: TProductData[] }) {
-  const defaultModel = getNewestModel(data)[0];
-  const [selectedModel, setSelectedModel] =
-    useState<TProductData>(defaultModel);
-  const [selections, setSelections] = useState({
+function CarSelector({
+  modelData,
+  pathParams,
+}: {
+  modelData: TProductData[];
+  pathParams: TPDPPathParams;
+}) {
+  const [coverOptionSelections, setCoverOptionSelections] = useState<{
+    color: string | undefined;
+    cover: string | undefined;
+    sku: string | undefined;
+  }>({
     color: '',
     cover: '',
+    sku: '',
   });
   const [featuredImage, setFeaturedImage] = useState<string | null>(null);
+  const { toast } = useToast();
+  const { addToCart } = useCartContext();
 
-  const currentSelections = Object.values(selections).filter((s) => s !== '');
+  const { color, cover, sku } = coverOptionSelections;
 
-  const displayedCover =
-    data.find((product) =>
-      currentSelections.every((selection) =>
-        Object.values(product).includes(selection)
-      )
-    ) || defaultModel;
+  const isReadyForSelection =
+    modelData.filter(
+      (model) =>
+        model.submodel1 === modelData[0].submodel1 &&
+        model.year_generation === modelData[0].year_generation
+    ).length === modelData.length;
 
-  console.log(displayedCover);
+  console.log('isReadyForSelection', isReadyForSelection);
 
-  console.log(selections);
-  const [selectedImage, setSelectedImage] = useState<string>(
-    selectedModel.feature as string
-  );
-  const generationOptions = getUniqueYearGenerations(data);
+  const getDefaultModelDisplayData = (
+    model: TProductData,
+    allModels: TProductData[]
+  ) => {
+    if (!model) return;
+    const { year_generation, submodel1, submodel2 } = model;
+    const matchingModels = allModels.filter(
+      (cover) =>
+        cover.year_generation === year_generation &&
+        cover.submodel1 == submodel1 &&
+        cover.submodel2 == submodel2
+    );
 
-  const productOptions = data.filter(
-    (model) =>
-      model.year_generation === selectedModel.year_generation &&
-      model.feature?.includes('category')
-  );
-  const colorOptions = groupProductsBy('display_color', productOptions);
-  const coverOptions = groupProductsBy('display_id', productOptions);
-
-  console.log('productOptions', productOptions);
-
-  //   const skusByColor = data.filter(obj => obj.display_color === colorOptions[0])
-
-  console.log(colorOptions, coverOptions);
-
-  const productImages = displayedCover.product?.split(',') ?? [];
-
-  const selectedOptionBorder = (option: string) => {
-    console.log('option', option);
-    return productOptions.find((prod) => prod.display_color === option)
-      ? 'h-40'
-      : '';
+    return matchingModels;
   };
 
-  const selectionClassname = (option: string, type: keyof typeof selections) =>
-    `w-full h-full m-1 border border-gray-300 rounded cursor-pointer ${
-      selections[type] === option ? 'border-4 border-red-300 rounded-lg' : ''
-    }`;
+  const defaultModel = getNewestModel(modelData)[0];
+  const defaultCoverOptions = getDefaultModelDisplayData(
+    defaultModel,
+    modelData
+  );
 
-  console.log('classname', selectionClassname);
+  const displayedProduct = isReadyForSelection
+    ? modelData.filter((model) => model.sku === sku)[0] ?? modelData[0]
+    : defaultModel;
+
+  console.log(modelData, displayedProduct, coverOptionSelections);
+
+  const isDisabled = !sku;
+  const handleAddToCart = () => {
+    const selectedProduct = displayedProduct;
+    if (!selectedProduct) return;
+    console.log('running');
+    return addToCart({ ...selectedProduct, quantity: 1 });
+  };
+
+  const productImages = displayedProduct?.product?.split(',') ?? [];
+
+  const colorOptions = groupProductsBy('display_color', modelData);
+  const coverTypeOptions = groupProductsBy('display_id', modelData);
+
+  const isOptionDisabled = (
+    productOption: TProductData | undefined,
+    type: keyof typeof coverOptionSelections
+  ) => {
+    const validOptions = modelData.filter(
+      (prod) => prod.display_color === color
+    );
+
+    const isDisabled =
+      type === 'cover' &&
+      !validOptions.find((o) => o.display_id === productOption?.display_id);
+
+    return isDisabled;
+  };
+
+  const selectionClassname = (
+    productOption: TProductData | undefined,
+    type: keyof typeof coverOptionSelections
+  ) => {
+    const disabledClassname = isOptionDisabled(productOption, type)
+      ? 'opacity-50 cursor-not-allowed'
+      : '';
+
+    if (type === 'cover') {
+      return `w-full h-full m-1 border border-gray-300 rounded cursor-pointer ${disabledClassname} ${
+        cover === productOption?.display_id
+          ? 'border-4 border-red-600 rounded-lg'
+          : ''
+      }`;
+    }
+
+    return `w-full h-full m-1 border border-gray-300 rounded cursor-pointer ${disabledClassname} ${
+      sku === productOption?.sku ? 'border-4 border-[#BE1B1B] rounded-lg' : ''
+    }`;
+  };
+
   return (
     <section className="h-auto w-full max-w-[1440px] mx-auto px-4 md:px-20">
       <div className="flex flex-col lg:flex-row justify-between w-full items-start py-14">
@@ -83,7 +143,7 @@ function CarSelector({ data }: { data: TProductData[] }) {
           {/* Featured Image */}
           <Image
             id="featured-image"
-            src={featuredImage ?? (displayedCover.feature as string)}
+            src={featuredImage ?? (displayedProduct?.feature as string)}
             alt="a car with a car cover on it"
             width={500}
             height={500}
@@ -101,7 +161,7 @@ function CarSelector({ data }: { data: TProductData[] }) {
                 alt="car cover details"
                 className={`w-full h-full border border-gray-300 rounded cursor-pointer ${
                   featuredImage === img
-                    ? 'border-4 border-red-300 rounded-lg'
+                    ? 'border-4 border-red-600 rounded-lg'
                     : ''
                 }}`}
                 onClick={() => setFeaturedImage(img)}
@@ -113,60 +173,90 @@ function CarSelector({ data }: { data: TProductData[] }) {
         {/* Right Panel */}
         <div className=" h-auto w-full lg:w-2/5 pl-0">
           {/* Color options */}
-          <p className="font-semibold">Cover Colors</p>
+          <p className="font-semibold">
+            {isReadyForSelection
+              ? `Color Options`
+              : `Please select your car's details below`}
+          </p>
           <div className="grid grid-cols-5 w-auto gap-4 ">
-            {colorOptions.map((option, idx) => (
-              <div
-                className="flex flex-col justify-center items-center"
-                key={option}
-              >
-                <Image
-                  src={
-                    productOptions.find((prod) => prod.display_color === option)
-                      ?.feature as string
-                  }
-                  width={100}
-                  height={100}
-                  alt="car cover details"
-                  className={selectionClassname(option, 'color')}
-                  onClick={() =>
-                    setSelections({ ...selections, color: option })
-                  }
-                />
-              </div>
-            ))}
+            {isReadyForSelection &&
+              colorOptions.map((option) => {
+                const productOption = modelData.find(
+                  (prod) => prod.display_color === option
+                );
+                console.log('productOption', productOption);
+                return (
+                  <div
+                    className="flex flex-col justify-center items-center"
+                    key={option}
+                  >
+                    <Image
+                      src={productOption?.feature as string}
+                      width={100}
+                      height={100}
+                      alt="car cover details"
+                      className={selectionClassname(productOption, 'color')}
+                      onClick={() =>
+                        setCoverOptionSelections({
+                          color: option,
+                          cover: productOption?.display_id as string,
+                          sku: productOption?.sku,
+                        })
+                      }
+                    />
+                  </div>
+                );
+              })}
           </div>
-          <Separator className="my-4" />
-          <p className="font-semibold">Cover Types</p>
+          {isReadyForSelection && (
+            <>
+              <Separator className="my-4" />
+              <p className="font-semibold">
+                {isDisabled ? 'Please select a color' : 'Cover Types'}
+              </p>
+            </>
+          )}
           <div className="grid grid-cols-5 w-auto gap-4">
-            {coverOptions.map((option, idx) => (
-              <button
-                className="flex flex-col justify-center items-center"
-                key={option}
-                onClick={() => setSelections({ ...selections, cover: option })}
-              >
-                <Image
-                  src={
-                    productOptions.find((prod) => prod.display_id === option)
-                      ?.feature as string
-                  }
-                  width={100}
-                  height={100}
-                  alt="car cover details"
-                  className={selectionClassname(option, 'cover')}
-                />
-              </button>
-            ))}
+            {isReadyForSelection &&
+              coverTypeOptions.map((option, idx) => {
+                const productOption = modelData.find(
+                  (prod) => prod.display_id === option
+                );
+                return (
+                  <button
+                    className="flex flex-col justify-center items-center"
+                    key={option}
+                    onClick={() =>
+                      setCoverOptionSelections({
+                        cover: option,
+                        color: coverOptionSelections.color,
+                        sku: coverOptionSelections.sku,
+                      })
+                    }
+                    disabled={isOptionDisabled(productOption, 'cover')}
+                  >
+                    <Image
+                      src={productOption?.feature as string}
+                      width={100}
+                      height={100}
+                      alt="car cover details"
+                      className={selectionClassname(productOption, 'cover')}
+                    />
+                  </button>
+                );
+              })}
           </div>
           <Separator className="my-4" />
 
-          <hr className="h-[1px] w-full bg-dark opacity-30 my-4" />
           {/* Title and Descriptions*/}
           <div className="grid grid-cols-1 gap-1">
             <div className="h-20">
               <h2 className="text-2xl font-bold text-dark pb-4">
-                {displayedCover.make} {displayedCover.product_name}&trade;{' '}
-                {displayedCover.display_id} {displayedCover.display_color}
+                {`${displayedProduct?.year_generation}
+                ${displayedProduct?.make} ${displayedProduct?.product_name}`}
+                &trade;{' '}
+                {`
+                ${displayedProduct?.display_id} ${displayedProduct?.display_color}`}
               </h2>
             </div>
             <div className="flex flex-start items-center leading-4">
@@ -185,15 +275,16 @@ function CarSelector({ data }: { data: TProductData[] }) {
           <div className="pt-4">
             <div className="grid grid-cols-1">
               <p className="text-dark text-3xl font-bold">
-                ${displayedCover.msrp}
+                ${displayedProduct?.msrp}
               </p>
               <p className="text-dark text-lg">
                 <span className="text-base  line-through opacity-50">
-                  ${displayedCover.price}
+                  ${displayedProduct?.price}
                 </span>{' '}
                 Save 50% ( $
                 {String(
-                  Number(displayedCover.price) - Number(displayedCover.msrp)
+                  Number(displayedProduct?.price) -
+                    Number(displayedProduct?.msrp)
                 )}
                 )
               </p>
@@ -234,8 +325,28 @@ function CarSelector({ data }: { data: TProductData[] }) {
               <BsInfoCircle size={14} color="#767676" />
             </div>
             <div className="mt-8">
-              <DropdownPDP currentSelection={displayedCover} />
+              <DropdownPDP
+                currentSelection={displayedProduct}
+                modelData={modelData}
+              />
             </div>
+            <Button
+              className="h-[60px] w-[400px] mt-4 text-lg bg-[#BE1B1B] disabled:bg-[#BE1B1B]"
+              onClick={() => {
+                handleAddToCart();
+                toast({
+                  duration: 3000,
+                  action: (
+                    <ToastAction altText="Success" className="w-full">
+                      Added your item to cart!
+                    </ToastAction>
+                  ),
+                });
+              }}
+              disabled={isDisabled}
+            >
+              Add To Cart
+            </Button>
           </div>
 
           {/* Button and borrowing info stuff */}
@@ -254,13 +365,6 @@ function CarSelector({ data }: { data: TProductData[] }) {
       ) : (
         <></>
       )} */}
-
-          <button
-            // onClick={handleAddToCart}
-            className="bg-dark-red text-white px-4 py-2 rounded mt-2 uppercase w-full"
-          >
-            Add to Cart
-          </button>
           <div className="pt-4">
             <p className="text-dark text-xs">
               As low as <span className="font-semibold">$32.50/mo</span> with{' '}

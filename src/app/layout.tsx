@@ -5,6 +5,7 @@ import Header from '@/pages/home/Header';
 import Providers from '@/providers';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Footer from '@/pages/home/Footer';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,13 +21,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} max-w-[1440px] mx-auto`}>
-        <Providers>
-          <Header />
-          {children}
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-        </Providers>
-        <Footer />
+      <body className={`${inter.className}`}>
+        <main className="max-w-[1440px] mx-auto">
+          <Providers>
+            <Header />
+            {children}
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            <Toaster />
+          </Providers>
+          <Footer />
+        </main>
       </body>
     </html>
   );

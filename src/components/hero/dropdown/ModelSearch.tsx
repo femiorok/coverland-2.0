@@ -39,7 +39,7 @@ export function ModelSearch({
     table: 'Models',
     column: '*',
     filterBy: 'make',
-    filterValue: 'BMW',
+    filterValue: queryObj.query.make,
   });
   console.log('data', data);
 
@@ -49,6 +49,7 @@ export function ModelSearch({
   console.log('query', query);
 
   const years = Array.from({ length: 100 }, (_, i) => 1924 + i);
+  const modelData = data?.data?.sort() as any;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -68,23 +69,23 @@ export function ModelSearch({
           <CommandInput placeholder="Enter model" />
           <CommandEmpty>No model found.</CommandEmpty>
           <CommandGroup>
-            {[]?.map((model) => (
+            {modelData?.map((info: any) => (
               <CommandItem
-                key={`model-${model}`}
-                value={model}
+                key={`model-${info.model}`}
+                value={info.model}
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? '' : currentValue);
                   setOpen(false);
-                  setQuery((p) => ({ ...p, model: value }));
+                  setQuery((p) => ({ ...p, model: info.model }));
                 }}
               >
                 <Check
                   className={cn(
                     'mr-2 h-4 w-4',
-                    value === model ? 'opacity-100' : 'opacity-0'
+                    value === info.model ? 'opacity-100' : 'opacity-0'
                   )}
                 />
-                {model}
+                {info.model}
               </CommandItem>
             ))}
           </CommandGroup>

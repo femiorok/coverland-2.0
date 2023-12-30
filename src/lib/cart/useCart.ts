@@ -1,48 +1,73 @@
-// import { useState, useCallback } from 'react';
+'use client';
 
-// const useCart = () => {
-//   const [cartItems, setCartItems] = useState([]);
+import { useState, useCallback, useEffect } from 'react';
+import { TProductData } from '../db';
 
-//   const addItemToCart = useCallback((item) => {
-//     setCartItems((prevItems) => {
-//       const existingItem = prevItems.find((i) => i.id === item.id);
+export type TCartItems = TProductData & { quantity: number };
 
-//       if (existingItem) {
-//         return prevItems.map((i) =>
-//           i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-//         );
-//       } else {
-//         return [...prevItems, { ...item, quantity: 1 }];
-//       }
-//     });
-//   }, []);
+const useCart = () => {
+  const [cartItems, setCartItems] = useState<TCartItems[]>(() => {
+    if (typeof window !== 'undefined') {
+      const localCartItems = localStorage.getItem('cartItems');
+      return localCartItems ? JSON.parse(localCartItems) : [];
+    }
+    return [];
+  });
 
-//   const removeItemFromCart = useCallback((itemId) => {
-//     setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-//   }, []);
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      localStorage.removeItem('cartItems');
+    }
 
-//   const adjustItemQuantity = useCallback((itemId, quantity) => {
-//     setCartItems((prevItems) =>
-//       prevItems.map((item) =>
-//         item.id === itemId ? { ...item, quantity } : item
-//       )
-//     );
-//   }, []);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
-//   const getTotalPrice = useCallback(() => {
-//     return cartItems.reduce(
-//       (total, item) => total + item.price * item.quantity,
-//       0
-//     );
-//   }, [cartItems]);
+  const addToCart = useCallback((item: TProductData) => {
+    if (!item?.msrp) {
+      return;
+    }
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((i) => i.sku === item.sku);
 
-//   return {
-//     cartItems,
-//     addItemToCart,
-//     removeItemFromCart,
-//     adjustItemQuantity,
-//     getTotalPrice,
-//   };
-// };
+      if (existingItem) {
+        return prevItems.map((i) =>
+          i.sku === item.sku ? { ...i, quantity: i.quantity + 1 } : i
+        );
+      } else {
+        return [...prevItems, { ...item, quantity: 1 }];
+      }
+    });
+  }, []);
 
-// export default useCart;
+  const removeItemFromCart = useCallback((sku: TCartItems['sku']) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.sku !== sku));
+  }, []);
+
+  const adjustItemQuantity = useCallback((sku: string, quantity: number) => {
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems
+        .map((item) => (item.sku === sku ? { ...item, quantity } : item))
+        .filter((item) => item.quantity !== 0);
+      return updatedItems;
+    });
+  }, []);
+
+  const getTotalPrice = useCallback(() => {
+    return cartItems.reduce(
+      (total, item) => total + Number(item.msrp as string) * item.quantity,
+      0
+    );
+  }, [cartItems]);
+
+  console.log(cartItems);
+
+  return {
+    cartItems,
+    addToCart,
+    removeItemFromCart,
+    adjustItemQuantity,
+    getTotalPrice,
+  };
+};
+
+export default useCart;

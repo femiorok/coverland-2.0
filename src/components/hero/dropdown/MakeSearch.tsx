@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/popover';
 import { TQuery } from './DropdownSearch';
 import { TProductData } from '@/lib/db';
+import { makes } from '@/lib/constants';
 
 export function MakeSearch({
   queryObj,
@@ -48,20 +49,20 @@ export function MakeSearch({
           aria-expanded={open}
           className="w-[275px] h-[60px] justify-between"
         >
-          {/* {value
+          {value
             ? makes.find(
                 (m) => m.toLocaleUpperCase() === value.toLocaleUpperCase()
               )
-            : 'Select car make'} */}
+            : 'Select car make'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[275px] p-0">
+      <PopoverContent className="w-[275px] h-60 p-0">
         <Command>
           <CommandInput placeholder="Enter Make" />
           <CommandEmpty>No make found.</CommandEmpty>
           <CommandGroup className="overflow-scroll">
-            {/* {makes.map((make) => (
+            {makes.map((make) => (
               <CommandItem
                 key={make}
                 value={make}
@@ -82,7 +83,7 @@ export function MakeSearch({
                 />
                 {make}
               </CommandItem>
-            ))} */}
+            ))}
           </CommandGroup>
         </Command>
       </PopoverContent>
