@@ -6,16 +6,51 @@ import Image from 'next/image';
 import Models from '@/data/car_year_make_model_list.json';
 import { useState } from 'react';
 import Cart from '@/components/header/Cart';
+import {
+  Hits,
+  InstantSearch,
+  SearchBox,
+  useInstantSearch,
+} from 'react-instantsearch';
+import { useHits } from 'react-instantsearch';
+import algoliasearch from 'algoliasearch';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import Link from 'next/link';
 
 function Header() {
-  const [autocomplete, setAutocomplete] = useState(Models);
+  const searchClient = algoliasearch(
+    process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
+  );
 
-  const filterModels = (value: any) => {
-    console.log(value);
-    const filteredModels = Models.filter((model) =>
-      model.toLowerCase().includes(value.toLowerCase())
-    );
-    setAutocomplete(filteredModels);
+  const customSearchClient = {
+    ...searchClient,
+    search<TObject>(requests) {
+      if (requests.every(({ params }) => !params.query)) {
+        return Promise.resolve({
+          results: requests.map(() => ({
+            hits: [],
+            nbHits: 0,
+            nbPages: 0,
+            page: 0,
+            processingTimeMS: 0,
+            hitsPerPage: 0,
+            exhaustiveNbHits: false,
+            query: '',
+            params: '',
+          })),
+        });
+      }
+
+      return searchClient.search<TObject>(requests);
+    },
   };
 
   return (
@@ -23,14 +58,38 @@ function Header() {
       <section className="flex w-full flex-col items-stretch px-16 max-md:max-w-full max-md:px-5">
         <div className="flex w-full items-stretch justify-between gap-5 max-md:max-w-full max-md:flex-wrap">
           <Logo />
-          <div className="flex w-full overflow-hidden items-center self-center relative min-h-[39px] gap-2.5 my-auto pt-2.5 pb-1 px-5 max-md:max-w-full max-md:flex-wrap">
-            <Search />
-            <input
+          <div className="flex w-full items-center self-center relative min-h-[39px] gap-2.5 my-auto pt-2.5 pb-1 px-5 max-md:max-w-full max-md:flex-wrap">
+            <InstantSearch
+              indexName="coverland_all_products"
+              searchClient={customSearchClient}
+            >
+              <SearchBox
+                classNames={{
+                  root: 'w-full flex justify-center',
+                  form: 'w-full flex justify-center',
+                  input:
+                    'w-full flex justify-center h-10 p-2 bg-gray-100 rounded-2xl leading-6 self-center grow shrink basis-auto my-auto',
+                  submitIcon: 'w-5 h-5',
+                  resetIcon: 'hidden',
+                  loadingIcon: 'hidden',
+                }}
+                placeholder="What vehicle are you looking for?"
+              />
+              <NoResultsBoundary>
+                <Hits
+                  classNames={{
+                    root: 'w-[300px] h-[300px] bg-gray-100 flex-col z-50 absolute top-14 text-center overflow-y-scroll rounded',
+                  }}
+                  hitComponent={({ hit }) => <CustomHits hit={hit} />}
+                />
+              </NoResultsBoundary>
+            </InstantSearch>
+            {/* <input
               className="relative flex text-lg p-2 bg-gray-100 rounded-2xl leading-6 self-center grow shrink basis-auto my-auto"
               aria-label="What vehicle are you looking for?"
               placeholder="What vehicle are you looking for?"
               onChange={(e) => filterModels(e.target.value)}
-            />
+            /> */}
           </div>
           <div className="self-center flex gap-3.5 my-auto items-start">
             <div className="items-stretch flex justify-between gap-5">
@@ -66,4 +125,28 @@ function Header() {
     </header>
   );
 }
+
+const CustomHits = ({ hit }) => {
+  return (
+    <div className="hover:bg-gray-300 my-2 " key={hit.sku}>
+      <Link href={hit.product_url_slug}>
+        <p>
+          {hit.make} {hit.model}
+        </p>
+      </Link>
+    </div>
+  );
+};
 export default Header;
+
+function NoResultsBoundary({ children }) {
+  const { results } = useInstantSearch();
+
+  // The `__isArtificial` flag makes sure not to display the No Results message
+  // when no hits have been returned.
+  if (!results.__isArtificial && results.nbHits === 0) {
+    return null;
+  }
+
+  return children;
+}
