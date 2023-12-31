@@ -68,7 +68,7 @@ export function ModelSearch({
         <Command>
           <CommandInput placeholder="Enter model" />
           <CommandEmpty>No model found.</CommandEmpty>
-          <CommandGroup>
+          <CommandGroup className="overflow-scroll">
             {modelData?.map((info: any) => (
               <CommandItem
                 key={`model-${info.model}`}
