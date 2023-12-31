@@ -12,9 +12,9 @@ export default function Home() {
       <HeroSection />
       {/* <CategoryCards /> */}
       <TrustBanner />
-      <SolutionSection />
+      {/* <SolutionSection /> */}
       <SecuritySection />
-      <SolutionSection />
+      {/* <SolutionSection /> */}
       <ImageAndBlurb />
     </>
   );
