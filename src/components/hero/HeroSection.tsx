@@ -35,9 +35,9 @@ const HeroSection = () => {
       </div>
       <div
         id="mobile-filter"
-        className="pt-4 md:pt-20 w-full bg-[#F9F9FB] lg:hidden"
+        className="pt-4 md:pt-20 w-full flex flex-col items-center bg-[#F9F9FB] md:hidden"
       >
-        {/* <Filter /> */}
+        <DropdownSearch />
       </div>
     </section>
   );

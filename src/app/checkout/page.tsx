@@ -62,7 +62,7 @@ function CheckoutPage() {
               <TableRow>
                 <TableHead className="text-xl">Product</TableHead>
                 <TableHead className="text-xl">QTY</TableHead>
-                <TableHead className="text-xl">Price</TableHead>
+                <TableHead className="text-xl hidden md:block">Price</TableHead>
                 <TableHead className="text-right text-xl">Total</TableHead>
               </TableRow>
             </TableHeader>
@@ -100,7 +100,7 @@ function CheckoutPage() {
                         </button>
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium text-2xl">
+                    <TableCell className="font-medium text-2xl hidden md:block">
                       {item.msrp}
                     </TableCell>
                     <TableCell className="text-right font-medium text-2xl">
@@ -114,7 +114,7 @@ function CheckoutPage() {
           <div className="w-full my-10 flex justify-center">
             <Button
               variant={'default'}
-              className="text-xl w-40"
+              className="text-xl w-40 bg-[#BE1B1B]"
               onClick={redirectToCheckout}
             >
               Checkout

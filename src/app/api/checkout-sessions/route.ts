@@ -9,6 +9,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const headersList = headers();
   const { cartItems } = await req.json();
 
+  const generateOrderId = () => {
+    const randomNumber = Math.floor(100000 + Math.random() * 900000);
+    return `CL-${randomNumber}`;
+  };
+
   const lineItems = cartItems.map((item: TCartItems) => {
     const unitAmount = item.msrp
       ? parseInt((parseFloat(item.msrp) * 100).toFixed(0))
@@ -37,8 +42,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     payment_method_types: ['card'],
     line_items: lineItems,
     mode: 'payment',
-    success_url: `${headersList.get('origin')}/thank-you`,
-    cancel_url: `${headersList.get('origin')}/`,
+    success_url: `${headersList.get(
+      'origin'
+    )}/thank-you?order-number=${generateOrderId()}`,
+    cancel_url: `${headersList.get('origin')}/cart`,
   };
 
   try {

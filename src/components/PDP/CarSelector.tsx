@@ -26,6 +26,8 @@ import { useCartContext } from '@/providers/CartProvider';
 import { TPDPPathParams } from '@/app/[productType]/[...product]/page';
 import { match } from 'assert';
 import { get } from 'http';
+import { Popover } from '@radix-ui/react-popover';
+import { PopoverContent, PopoverTrigger } from '../ui/popover';
 
 function CarSelector({
   modelData,
@@ -131,7 +133,7 @@ function CarSelector({
     }
 
     return `w-full h-full m-1 border border-gray-300 rounded cursor-pointer ${disabledClassname} ${
-      sku === productOption?.sku ? 'border-4 border-[#BE1B1B] rounded-lg' : ''
+      sku === productOption?.sku ? 'border-4 border-red-600 rounded-lg' : ''
     }`;
   };
 
@@ -249,7 +251,7 @@ function CarSelector({
           <Separator className="my-4" />
 
           {/* Title and Descriptions*/}
-          <div className="grid grid-cols-1 gap-1">
+          <div className="grid grid-cols-1 gap-4">
             <div className="h-20">
               <h2 className="text-2xl font-bold text-dark pb-4">
                 {`${displayedProduct?.year_generation}
@@ -324,29 +326,43 @@ function CarSelector({
               </p>
               <BsInfoCircle size={14} color="#767676" />
             </div>
-            <div className="mt-8">
+            <div className="mt-8 w-full">
               <DropdownPDP
                 currentSelection={displayedProduct}
                 modelData={modelData}
               />
             </div>
-            <Button
-              className="h-[60px] w-[400px] mt-4 text-lg bg-[#BE1B1B] disabled:bg-[#BE1B1B]"
-              onClick={() => {
-                handleAddToCart();
-                toast({
-                  duration: 3000,
-                  action: (
-                    <ToastAction altText="Success" className="w-full">
-                      Added your item to cart!
-                    </ToastAction>
-                  ),
-                });
-              }}
-              disabled={isDisabled}
-            >
-              Add To Cart
-            </Button>
+            {isDisabled ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button className="h-[60px] md:w-[400px] w-full mt-4 text-lgbg-[#BE1B1B] opacity-70">
+                    Add To Cart
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <div className="">
+                    <p>Please select a product above</p>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Button
+                className="h-[60px] md:w-[400px] w-full mt-4 text-lg bg-[#BE1B1B] disabled:bg-[#BE1B1B]"
+                onClick={() => {
+                  handleAddToCart();
+                  toast({
+                    duration: 3000,
+                    action: (
+                      <ToastAction altText="Success" className="w-full">
+                        Added your item to cart!
+                      </ToastAction>
+                    ),
+                  });
+                }}
+              >
+                Add To Cart
+              </Button>
+            )}
           </div>
 
           {/* Button and borrowing info stuff */}

@@ -40,12 +40,12 @@ export function TypeSearch({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="focus">
+      <PopoverTrigger className="focus relative">
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`w-[275px] h-[60px] justify-between text-lg rounded ${onFocus}`}
+          className={`w-[275px] h-[60px] justify-between relative text-lg rounded ${onFocus}`}
         >
           {value.toLocaleUpperCase() || 'Product Type'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

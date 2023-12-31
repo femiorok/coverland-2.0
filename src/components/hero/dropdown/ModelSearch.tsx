@@ -60,11 +60,11 @@ export function ModelSearch({
           aria-expanded={open}
           className="w-[275px] h-[60px] justify-between"
         >
-          {value ? value.toString() : 'Select car model'}
+          {value ? value : 'Select car model'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[275px] p-0">
+      <PopoverContent className="w-[275px] h-60 overflow-scroll p-0">
         <Command>
           <CommandInput placeholder="Enter model" />
           <CommandEmpty>No model found.</CommandEmpty>
@@ -74,7 +74,7 @@ export function ModelSearch({
                 key={`model-${info.model}`}
                 value={info.model}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
+                  setValue(info.model);
                   setOpen(false);
                   setQuery((p) => ({ ...p, model: info.model }));
                 }}

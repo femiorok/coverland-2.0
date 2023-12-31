@@ -25,27 +25,14 @@ export default async function ProductPDP({
   const dataWithQueries = await fetchPDPDataWithQuery(searchParams, pathParams);
 
   const data = dataWithQueries?.length ? dataWithQueries : initData;
+  console.log('data', data);
 
   if (!data) return null;
   const modelData = data?.filter((item) => item.msrp);
+  console.log('modelData', modelData);
 
   const modelDataByYear = searchParams.year
-    ? modelData.filter((model) => {
-        const parsedYearParam = parseInt(searchParams.year as string);
-        const generationStart = model?.generation_start ?? -1;
-        const generationEnd = model?.generation_end;
-
-        //2024 models will have a null value for generationEnd
-        return (
-          (generationEnd === null &&
-            generationStart !== -1 &&
-            generationStart <= parsedYearParam) ||
-          (generationEnd !== null &&
-            generationStart !== null &&
-            generationEnd >= parsedYearParam &&
-            generationStart <= parsedYearParam)
-        );
-      })
+    ? modelData.filter((model) => model.year_range.includes(searchParams.year))
     : modelData;
 
   const modelDataBySubmodel = searchParams.submodel
@@ -55,7 +42,7 @@ export default async function ProductPDP({
       })
     : modelDataByYear;
 
-  console.log(modelDataBySubmodel, searchParams.submodel);
+  console.log(modelDataBySubmodel, searchParams.submodel, modelDataByYear);
 
   const dataByParams = !!modelDataBySubmodel?.length
     ? modelDataBySubmodel
