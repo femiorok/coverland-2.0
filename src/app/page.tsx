@@ -1,5 +1,5 @@
 import HeroSection from '@/components/hero/HeroSection';
-import CategoryCards from '@/pages/home/CategoryCards';
+// import CategoryCards from '@/pages/home/CategoryCards';
 import ImageAndBlurb from '@/pages/home/ImageAndBlurb';
 import SecuritySection from '@/pages/home/SecuritySection';
 import SolutionSection from '@/pages/home/SolutionSection';
