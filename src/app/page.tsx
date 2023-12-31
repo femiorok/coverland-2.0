@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <CategoryCards />
+      {/* <CategoryCards /> */}
       <TrustBanner />
       <SolutionSection />
       <SecuritySection />
