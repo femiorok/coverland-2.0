@@ -22,7 +22,7 @@ function CheckoutPage() {
   const redirectToCheckout = async () => {
     try {
       const stripe = await loadStripe(
-        'pk_test_51IpdPcDnAldfe1ltf4k5zQnDXzzKVPt9uCzgy0MjbFgnLX15438kjiKmnz6F6R0kBh3QMorsQlafpNHjXq7niliI00erfiK6Xk' as string
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
       );
 
       if (!stripe) throw new Error('Stripe failed to initialize.');
