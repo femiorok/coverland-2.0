@@ -1,21 +1,10 @@
+import { makes } from '@/lib/constants';
 import { useQuery } from '@tanstack/react-query';
 import { TProductsInColumnArgs, TableRow, fetchFilteredProducts } from '..';
 
-export const useProductData = <T extends TableRow>({
-  table,
-  column,
-  filterBy,
-  filterValue,
-}: TProductsInColumnArgs<T>) => {
+export const useProductData = ({ where, includes }: TProductsInColumnArgs) => {
   return useQuery({
-    queryKey: [
-      `${table}-${column as string}`,
-      table,
-      column,
-      filterBy,
-      filterValue,
-    ],
-    queryFn: () =>
-      fetchFilteredProducts({ table, column, filterBy, filterValue }),
+    queryKey: [where, includes],
+    queryFn: () => fetchFilteredProducts({ where, includes }),
   });
 };

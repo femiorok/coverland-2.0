@@ -58,10 +58,10 @@ export function TypeSearch({
               <CommandItem
                 key={`type-${type}-${i}`}
                 value={type}
-                onSelect={(currentValue) => {
+                onSelect={() => {
                   setValue(type);
                   setOpen(false);
-                  setQueryProp({ type: currentValue });
+                  setQueryProp({ type: type });
                 }}
                 className="text-lg"
               >
@@ -71,7 +71,7 @@ export function TypeSearch({
                     value === type ? 'opacity-100' : 'opacity-0'
                   )}
                 />
-                {type.toLocaleUpperCase()}
+                {type}
               </CommandItem>
             ))}
           </CommandGroup>

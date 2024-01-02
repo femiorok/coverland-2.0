@@ -788,6 +788,7 @@ export interface Database {
           display_color: string | null;
           display_id: string | null;
           feature: string | null;
+          fit_key: string | null;
           generation_end: number | null;
           generation_start: number | null;
           make: string | null;
@@ -808,12 +809,14 @@ export interface Database {
           submodel2_slug: string | null;
           type: string | null;
           year_generation: string | null;
+          year_range: string | null;
         };
         Insert: {
           base_sku?: string | null;
           display_color?: string | null;
           display_id?: string | null;
           feature?: string | null;
+          fit_key?: string | null;
           generation_end?: number | null;
           generation_start?: number | null;
           make?: string | null;
@@ -834,12 +837,14 @@ export interface Database {
           submodel2_slug?: string | null;
           type?: string | null;
           year_generation?: string | null;
+          year_range?: string | null;
         };
         Update: {
           base_sku?: string | null;
           display_color?: string | null;
           display_id?: string | null;
           feature?: string | null;
+          fit_key?: string | null;
           generation_end?: number | null;
           generation_start?: number | null;
           make?: string | null;
@@ -860,6 +865,7 @@ export interface Database {
           submodel2_slug?: string | null;
           type?: string | null;
           year_generation?: string | null;
+          year_range?: string | null;
         };
         Relationships: [];
       };
@@ -946,6 +952,24 @@ export interface Database {
           default_make_images?: string | null;
           id?: number;
           name?: string;
+        };
+        Relationships: [];
+      };
+      'Vehicle-Models': {
+        Row: {
+          default_model_images: string | null;
+          id: number;
+          name: string | null;
+        };
+        Insert: {
+          default_model_images?: string | null;
+          id?: number;
+          name?: string | null;
+        };
+        Update: {
+          default_model_images?: string | null;
+          id?: number;
+          name?: string | null;
         };
         Relationships: [];
       };

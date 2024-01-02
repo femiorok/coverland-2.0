@@ -26,6 +26,7 @@ import {
 import Link from 'next/link';
 
 function Header() {
+  const [showHits, setShowHits] = useState(false);
   return (
     <header className="bg-white flex flex-col items-stretch pt-2.5">
       <section className="flex w-full flex-col items-stretch px-16 max-md:max-w-full max-md:px-5">
@@ -37,8 +38,8 @@ function Header() {
           </div>
           <div className="flex w-full items-center self-center relative min-h-[39px] gap-2.5 pt-2.5 pb-1 px-5 max-md:max-w-full max-md:flex-wrap">
             <AlgoliaWrapper>
-              <AlgoliaSearchBox />
-              <NoResultsBoundary>
+              <AlgoliaSearchBox setShowHits={setShowHits} />
+              <NoResultsBoundary showHits={showHits}>
                 <Hits
                   classNames={{
                     root: 'w-[300px] h-[300px] bg-gray-100 flex-col z-50 absolute top-14 text-center overflow-y-scroll rounded',
@@ -87,6 +88,11 @@ export default Header;
 
 const CustomHits = ({ hit }) => {
   const { refine } = useSearchBox();
+  const { hits } = useHits();
+
+  const hitsSkus = hits.map((hit) => hit.model).slice(1, hits.length - 1);
+  if (hitsSkus.includes(hit.model)) return null;
+
   return (
     <div
       className="hover:bg-gray-300 my-2 "
@@ -102,7 +108,7 @@ const CustomHits = ({ hit }) => {
   );
 };
 
-function NoResultsBoundary({ children }) {
+function NoResultsBoundary({ children, showHits, setShowHits }) {
   const { results, indexUiState } = useInstantSearch();
 
   console.log(indexUiState);
@@ -111,7 +117,8 @@ function NoResultsBoundary({ children }) {
   // when no hits have been returned.
   if (
     (!results.__isArtificial && results.nbHits === 0) ||
-    !indexUiState.query
+    !indexUiState.query ||
+    !showHits
   ) {
     return null;
   }
@@ -157,7 +164,7 @@ function AlgoliaWrapper({ children }) {
   );
 }
 
-const AlgoliaSearchBox = () => {
+const AlgoliaSearchBox = ({ setShowHits }) => {
   const { refine } = useSearchBox();
 
   return (
@@ -172,7 +179,8 @@ const AlgoliaSearchBox = () => {
         loadingIcon: 'hidden',
       }}
       placeholder="What vehicle are you looking for?"
-      onBlur={() => refine('')}
+      onFocus={() => setShowHits(true)}
+      onBlur={() => setShowHits(false)}
     />
   );
 };

@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database, Tables } from './types';
+import { Database, Enums, Tables } from './types';
 import {
   TPDPPathParams,
   TPDPQueryParams,
@@ -21,16 +21,27 @@ export type TableRow = keyof Database['public']['Tables'];
 export type TableColumn<T extends TableRow> =
   keyof Database['public']['Tables'][T]['Row'];
 
-export type TProductsInColumnArgs<T extends TableRow> = {
-  table: T;
-  column: TableColumn<T> | Array<TableColumn<T>> | '*';
-  filterBy?: string;
-  filterValue?: string;
-};
+export type TProducts20204 = Tables<'Products-2024'>;
+export interface TProductsInColumnArgs {
+  where?: {
+    [key in keyof TProducts20204]?: TProducts20204[key];
+  };
+  includes?: {
+    [key in keyof TProducts20204]?: TProducts20204[key];
+  };
+}
+
 //If the table you want to access isn't listed in TableRow,
 //generate new types in the Supabase dashboard to update
 //them and replace the types.ts file in this folder
 
+// Define the type for filters
+interface FilterCriterion {
+  filterBy: string;
+  filterValue: any;
+}
+
+// Adjust the type definition
 export const fetchModelsOfMake = async (make: string) => {
   let { data: Models, error } = await supabase
     .from('Models')
@@ -64,17 +75,31 @@ export async function fetchSubmodelsOfModel(model: string) {
   };
 }
 
-export async function fetchFilteredProducts<T extends TableRow>({
-  table,
-  column,
-  filterBy,
-  filterValue,
-}: TProductsInColumnArgs<T>) {
+export async function fetchFilteredProducts({
+  where,
+  includes,
+}: TProductsInColumnArgs) {
+  console.log(where);
+  if (!where?.type || !includes?.year_range) return [];
   try {
-    const query = supabase.from(table).select(column as string);
+    console.log('fetching products');
+    let query = supabase.from('Products-2024').select();
 
-    if (filterBy && filterValue !== undefined) {
-      query.eq(filterBy, filterValue);
+    if (where) {
+      Object.entries(where).forEach(([key, value]) => {
+        console.log('updating query');
+
+        if (key && value) query = query.eq(key, value);
+      });
+    }
+
+    if (includes) {
+      Object.entries(includes).forEach(([key, value]) => {
+        console.log('updating query');
+
+        if (key && typeof value === 'string')
+          query = query.textSearch(key, value);
+      });
     }
 
     const { data, error } = await query;
@@ -82,15 +107,33 @@ export async function fetchFilteredProducts<T extends TableRow>({
     if (error) {
       throw error;
     }
+    const uniqueModels = data
+      .map((item) => {
+        return {
+          model: item.model,
+          make: item.make,
+          submodel1: item.submodel1,
+          submodel2: item.submodel2,
+          year_range: item.year_range,
+          slug: item.product_url_slug,
+        };
+      })
+      .filter(
+        (value, index, self) => self.indexOf(value) === index && !!value.model
+      );
 
-    return data;
+    console.log('models', uniqueModels, data.length);
+
+    return uniqueModels.length ? uniqueModels : [];
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;
   }
 }
 
-export async function fetchPDPData(pathParams: TPDPPathParams) {
+export async function fetchPDPData(
+  pathParams: TPDPPathParams
+): Promise<TProductData[] | null> {
   const modelFromPath = pathParams?.product[1];
   const makeFromPath = pathParams?.product[0];
 
@@ -110,7 +153,7 @@ export async function fetchPDPData(pathParams: TPDPPathParams) {
 export async function fetchPDPDataWithQuery(
   queryParams: TPDPQueryParams,
   params: TPDPPathParams
-) {
+): Promise<TProductData[] | null> {
   if (!queryParams?.year) return null;
 
   const make = params?.product[0];
@@ -127,6 +170,7 @@ export async function fetchPDPDataWithQuery(
     .textSearch('year_range', year);
 
   if (submodel1) {
+    console.log('submodel1', submodel1);
     fetch = fetch.textSearch('submodel1_slug', submodel1);
   }
 

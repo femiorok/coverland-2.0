@@ -1,10 +1,11 @@
-import { fetchPDPData, fetchPDPDataWithQuery } from '@/lib/db';
+import { TProductData, fetchPDPData, fetchPDPDataWithQuery } from '@/lib/db';
 import Image from 'next/image';
 import CarSelector from '@/components/PDP/CarSelector';
 import KeepDry from '@/images/PDP/keep_dry.webp';
 import LayerImg from '@/images/PDP/layer_breakdown.webp';
 import Material from '@/images/PDP/material-right.webp';
 import ZeroLeaks from '@/images/PDP/zero_leaks.webp';
+import { redirect } from 'next/navigation';
 
 export type TPDPPathParams = { productType: string; product: string[] };
 
@@ -21,18 +22,31 @@ export default async function ProductPDP({
   params: TPDPPathParams;
   searchParams: TPDPQueryParams;
 }) {
-  const initData = await fetchPDPData(pathParams);
-  const dataWithQueries = await fetchPDPDataWithQuery(searchParams, pathParams);
+  console.log('pathParams', pathParams);
+  if (
+    pathParams.productType !== 'car-covers' &&
+    pathParams.productType !== 'suv-covers' &&
+    pathParams.productType !== 'truck-covers' &&
+    pathParams.productType !== 'van-covers'
+  ) {
+    redirect('/404');
+  }
+  let productData = [];
 
-  const data = dataWithQueries?.length ? dataWithQueries : initData;
-  console.log('data', data);
+  productData = searchParams.year
+    ? (await fetchPDPDataWithQuery(searchParams, pathParams)) ?? []
+    : (await fetchPDPData(pathParams)) ?? [];
 
-  if (!data) return null;
-  const modelData = data?.filter((item) => item.msrp);
+  if (!productData) return null;
+  const modelData = productData?.filter((item) => item.msrp);
   console.log('modelData', modelData);
 
   const modelDataByYear = searchParams.year
-    ? modelData.filter((model) => model.year_range.includes(searchParams.year))
+    ? modelData.filter(
+        (model) =>
+          model?.year_range &&
+          model.year_range.includes(searchParams?.year ?? '2023')
+      )
     : modelData;
 
   const modelDataBySubmodel = searchParams.submodel

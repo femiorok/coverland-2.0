@@ -1,52 +1,25 @@
 'use client';
 
-import { Dispatch, SetStateAction, use, useEffect } from 'react';
-import { Check, ChevronDown, ChevronsUpDown } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { TQuery } from '../DropdownPDP';
-import { TProductData, fetchSubmodelsOfModel } from '@/lib/db';
-import { makes } from '@/lib/constants';
-import { useProductData } from '@/lib/db/hooks/useProductData';
+import { TProductData } from '@/lib/db';
+
 import { useState } from 'react';
 import useCarSelection from '@/lib/db/hooks/useCarSelection';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import path from 'path';
+
 import { extractUniqueValues } from '../utils';
+import { SubmodelSearch } from './SubmodelSearch';
+import { YearSearch } from './YearSearch';
+import { SubmodelSearch2nd } from './SubmodelSearch2nd';
 
 export default function SubDropdowns({
-  currentSelection,
   modelData,
 }: {
-  currentSelection: TProductData | undefined;
   modelData: TProductData[];
 }) {
   const {
     selectedYear,
     setSelectedYear,
-    selectedMake,
-    setSelectedMake,
-    selectedModel,
-    setSelectedModel,
-    filteredMakes,
-    filteredModels,
-    subModelOptions,
-    setSubModelOptions,
-    secondSubmodelOptions,
-    setSecondSubmodelOptions,
     selectedSubmodel,
     setSelectedSubmodel,
     selectedSecondSubmodel,
@@ -56,269 +29,81 @@ export default function SubDropdowns({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const pathSegments = pathname?.split('/');
-  const year = searchParams?.get('year');
-  const make = searchParams?.get('make');
-  const model = searchParams?.get('model');
-  const submodel = searchParams?.get('submodel');
+  const yearParam = searchParams?.get('year') ?? '';
+  const submodelParam = searchParams?.get('submodel') ?? '';
+  const submodelParam2nd = searchParams?.get('second_submodel') ?? '';
 
   console.log(searchParams);
 
-  const carSelection = {
-    selectedYear,
-    selectedMake,
-    selectedModel,
-    selectedSubmodel,
-    selectedSecondSubmodel,
-  };
+  console.log(modelData);
+  const yearData = [
+    ...new Set(
+      modelData
+        ?.flatMap((d) => d.year_range?.split(','))
+        .sort()
+        .reverse()
+        .filter((y): y is string => !!y)
+    ),
+  ];
 
-  console.log(carSelection);
-  console.log(currentSelection);
+  console.log(yearData);
 
   const setSearchParams = () => {
-    const { selectedYear, selectedSubmodel, selectedSecondSubmodel } =
-      carSelection;
-    const params = new URLSearchParams();
+    const currentParams = new URLSearchParams(window.location.search);
 
     if (selectedYear) {
-      params.append('year', selectedYear.toString().toLowerCase());
+      currentParams.append('year', selectedYear.toString().toLowerCase());
     }
     if (selectedSubmodel) {
-      params.append('submodel', selectedSubmodel.toLowerCase());
+      currentParams.append('submodel', selectedSubmodel.toLowerCase());
     }
 
     if (selectedSecondSubmodel) {
-      params.append('second_submodel', selectedSecondSubmodel.toLowerCase());
+      currentParams.append(
+        'second_submodel',
+        selectedSecondSubmodel.toLowerCase()
+      );
     }
 
-    router.push(`${pathname}?${params.toString()}`);
+    currentParams.append('selected', 'true');
+
+    router.push(`${pathname}?${currentParams.toString()}`);
   };
+
+  console.log(selectedSubmodel);
 
   console.log(pathname);
 
-  const isDisabled = !year || !make || !model;
+  const hasSubmodel = modelData.filter((car) => car?.submodel1).length > 0;
+  const hasSecondSubModel =
+    modelData.filter((car) => car?.submodel2).length > 0;
 
   return (
     <>
-      <YearSearch setYear={setSelectedYear} modelData={modelData} />
+      <YearSearch
+        setYear={setSelectedYear}
+        yearData={yearData}
+        yearParam={yearParam}
+      />
 
-      <GenerationSearch
+      <SubmodelSearch
         modelData={modelData}
-        selectedYear={selectedYear}
         setSelectedSubmodel={setSelectedSubmodel}
+        submodelParam={submodelParam}
       />
-      <GenerationSearch2
-        modelData={modelData}
-        selectedYear={selectedYear}
-        setSelectedSubmodel={setSelectedSecondSubmodel}
-      />
+      {selectedSubmodel && (
+        <SubmodelSearch2nd
+          modelData={modelData}
+          setSelectedSubmodel={setSelectedSecondSubmodel}
+          submodelParam2nd={submodelParam2nd}
+        />
+      )}
 
-      <Button className="h-[60px] text-lg" onClick={setSearchParams}>
-        Go
-      </Button>
+      {hasSubmodel && (
+        <Button className="h-[60px] text-lg" onClick={setSearchParams}>
+          Set Selection
+        </Button>
+      )}
     </>
-  );
-}
-
-function GenerationSearch({
-  setSelectedSubmodel,
-  modelData,
-  selectedYear,
-}: {
-  modelData: TProductData[];
-  setSelectedSubmodel: Dispatch<SetStateAction<string | null>>;
-  selectedYear: string | null;
-}) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
-
-  const submodelOptions =
-    selectedYear &&
-    modelData.filter(
-      (car) =>
-        (car.generation_start as number) <= parseInt(selectedYear) &&
-        (car.generation_end as number) >= parseInt(selectedYear)
-    );
-
-  const { uniqueSubmodel1, uniqueSubmodel2 } = extractUniqueValues(
-    submodelOptions as TProductData[]
-  );
-
-  console.log(uniqueSubmodel1);
-
-  if (!uniqueSubmodel1.length) return null;
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full h-[60px] justify-between"
-        >
-          {value ? value : 'Select car generation'}
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[400px] h-[300px] p-0 text-xl">
-        <Command>
-          <CommandInput placeholder="Enter Generation" />
-          <CommandEmpty>No submodel found.</CommandEmpty>
-          <CommandGroup className="overflow-scroll">
-            {uniqueSubmodel1.map((sub) => (
-              <CommandItem
-                key={`generation-${sub}`}
-                value={sub}
-                onSelect={() => {
-                  setValue(sub);
-                  setOpen(false);
-                  setSelectedSubmodel(sub);
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    value === sub ? 'opacity-100' : 'opacity-0'
-                  )}
-                />
-                {sub}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function GenerationSearch2({
-  setSelectedSubmodel,
-  modelData,
-  selectedYear,
-}: {
-  modelData: TProductData[];
-  setSelectedSubmodel: Dispatch<SetStateAction<string | null>>;
-  selectedYear: string | null;
-}) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
-
-  const submodelOptions =
-    selectedYear &&
-    modelData.filter(
-      (car) =>
-        (car.generation_start as number) <= parseInt(selectedYear) &&
-        (car.generation_end as number) >= parseInt(selectedYear)
-    );
-
-  const { uniqueSubmodel1, uniqueSubmodel2 } = extractUniqueValues(
-    submodelOptions as TProductData[]
-  );
-
-  console.log(uniqueSubmodel1);
-
-  if (!uniqueSubmodel2.length) return null;
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full h-[60px] justify-between"
-        >
-          {value ? value : 'Select car generation'}
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[400px] h-[300px] p-0 text-xl">
-        <Command>
-          <CommandInput placeholder="Enter Generation" />
-          <CommandEmpty>No submodel found.</CommandEmpty>
-          <CommandGroup className="overflow-scroll">
-            {uniqueSubmodel2.map((sub) => (
-              <CommandItem
-                key={`generation-${sub}`}
-                value={sub}
-                onSelect={() => {
-                  setValue(sub);
-                  setOpen(false);
-                  setSelectedSubmodel(sub);
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    value === sub ? 'opacity-100' : 'opacity-0'
-                  )}
-                />
-                {sub}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function YearSearch({
-  setYear,
-  modelData,
-}: {
-  setYear: Dispatch<SetStateAction<string | null>>;
-  modelData: TProductData[];
-}) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
-
-  const { yearsOptions } = extractUniqueValues(modelData);
-  console.log(yearsOptions);
-
-  console.log(extractUniqueValues(modelData));
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full h-[60px] justify-between"
-        >
-          {value ? value.toString() : 'Select car year'}
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[400px] h-[300px] p-0 text-xl">
-        <Command>
-          <CommandInput placeholder="Enter Year" />
-          <CommandEmpty>No year found.</CommandEmpty>
-          <CommandGroup className="overflow-scroll">
-            {yearsOptions.reverse().map((year) => (
-              <CommandItem
-                key={`year-${year}`}
-                value={year.toString()}
-                onSelect={() => {
-                  setValue(`${year}`);
-                  setOpen(false);
-                  setYear(`${year}`);
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    value === year.toString() ? 'opacity-100' : 'opacity-0'
-                  )}
-                />
-                {year.toString()}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
   );
 }

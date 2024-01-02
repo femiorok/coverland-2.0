@@ -20,21 +20,26 @@ import {
 import { TQuery } from './DropdownSearch';
 import { TProductData } from '@/lib/db';
 import { makes } from '@/lib/constants';
+import { useProductData } from '@/lib/db/hooks/useProductData';
 
 export function MakeSearch({
   queryObj,
-  currentSelection,
+  makeData,
 }: {
   queryObj: {
     query: TQuery;
     setQuery: React.Dispatch<React.SetStateAction<TQuery>>;
   };
-  currentSelection?: TProductData;
+  makeData: string[];
 }) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
 
   const { query, setQuery } = queryObj;
+  const sortedData = makeData.sort((a, b) => a.localeCompare(b));
+  console.log('sortedData', sortedData);
+
+  console.log('query', query);
 
   const isDisabled = !query.type || !query.year;
 
@@ -49,11 +54,7 @@ export function MakeSearch({
           aria-expanded={open}
           className="w-[275px] h-[60px] justify-between"
         >
-          {value
-            ? makes.find(
-                (m) => m.toLocaleUpperCase() === value.toLocaleUpperCase()
-              )
-            : 'Select car make'}
+          {value || 'Select car make'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -62,12 +63,12 @@ export function MakeSearch({
           <CommandInput placeholder="Enter Make" />
           <CommandEmpty>No make found.</CommandEmpty>
           <CommandGroup className="overflow-scroll">
-            {makes.map((make) => (
+            {makeData.map((make) => (
               <CommandItem
                 key={make}
                 value={make}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
+                onSelect={() => {
+                  setValue(make);
                   setOpen(false);
                   setQuery((p) => ({
                     ...p,

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import carData from '@/data/transformed_car_data.json';
 import { TProductData } from '..';

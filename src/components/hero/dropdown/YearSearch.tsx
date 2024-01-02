@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { Check, ChevronDown, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -19,6 +18,7 @@ import {
 } from '@/components/ui/popover';
 import { TQuery } from './DropdownSearch';
 import { TProductData } from '@/lib/db';
+import { useState } from 'react';
 
 export function YearSearch({
   queryObj,
@@ -30,8 +30,8 @@ export function YearSearch({
   };
   currentSelection?: TProductData;
 }) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
 
   const years = Array.from({ length: 100 }, (_, i) => 1924 + i).reverse();
   const { query, setQuery } = queryObj;

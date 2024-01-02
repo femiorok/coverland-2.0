@@ -16,11 +16,11 @@ export function extractUniqueValues(
     if (item.generation_end) {
       generationEndSet.add(item.generation_end);
     }
-    if (item.submodel1) {
-      uniqueSubmodel1Set.add(item.submodel1);
+    if (item.submodel1_slug) {
+      uniqueSubmodel1Set.add(item.submodel1_slug);
     }
-    if (item.submodel2) {
-      uniqueSubmodel2Set.add(item.submodel2);
+    if (item.submodel2_slug) {
+      uniqueSubmodel2Set.add(item.submodel2_slug);
     }
   });
 

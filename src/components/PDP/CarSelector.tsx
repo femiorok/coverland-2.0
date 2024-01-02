@@ -327,10 +327,7 @@ function CarSelector({
               <BsInfoCircle size={14} color="#767676" />
             </div>
             <div className="mt-8 w-full">
-              <DropdownPDP
-                currentSelection={displayedProduct}
-                modelData={modelData}
-              />
+              <DropdownPDP modelData={modelData} />
             </div>
             {isDisabled ? (
               <Popover>
