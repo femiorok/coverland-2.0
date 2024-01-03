@@ -25,6 +25,22 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 
+function removeDuplicates(items: any[]) {
+  const uniqueItems: any = [];
+  const objectIds = new Set();
+  console.log(uniqueItems);
+  console.log(objectIds);
+
+  items.forEach((item) => {
+    if (!objectIds.has(item.objectID)) {
+      uniqueItems.push(item);
+      objectIds.add(item.objectID);
+    }
+  });
+
+  return uniqueItems;
+}
+
 function Header() {
   const [showHits, setShowHits] = useState(false);
   return (
@@ -45,6 +61,7 @@ function Header() {
                     root: 'w-[300px] h-[300px] bg-gray-100 flex-col z-50 absolute top-14 text-center overflow-y-scroll rounded',
                   }}
                   hitComponent={({ hit }) => <CustomHits hit={hit} />}
+                  transformItems={removeDuplicates}
                 />
               </NoResultsBoundary>
             </AlgoliaWrapper>
@@ -112,6 +129,7 @@ function NoResultsBoundary({ children, showHits, setShowHits }) {
   const { results, indexUiState } = useInstantSearch();
 
   console.log(indexUiState);
+  console.log(results);
 
   // The `__isArtificial` flag makes sure not to display the No Results message
   // when no hits have been returned.

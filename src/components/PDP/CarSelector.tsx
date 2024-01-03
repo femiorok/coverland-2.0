@@ -51,6 +51,12 @@ function CarSelector({
 
   const { color, cover, sku } = coverOptionSelections;
 
+  const activeSku = modelData.filter(
+    (model) => model.display_color === color && model.display_id === cover
+  )[0];
+
+  console.log('activeSku', activeSku);
+
   const isReadyForSelection =
     modelData.filter(
       (model) =>
@@ -100,6 +106,8 @@ function CarSelector({
 
   const colorOptions = groupProductsBy('display_color', modelData);
   const coverTypeOptions = groupProductsBy('display_id', modelData);
+
+  console.log('types', coverTypeOptions);
 
   const isOptionDisabled = (
     productOption: TProductData | undefined,
@@ -179,6 +187,10 @@ function CarSelector({
             {isReadyForSelection
               ? `Color Options`
               : `Please select your car's details below`}
+            :{' '}
+            <span className="font-normal">
+              {activeSku && `${activeSku?.display_color}`}
+            </span>
           </p>
           <div className="grid grid-cols-5 w-auto gap-4 ">
             {isReadyForSelection &&
@@ -214,7 +226,10 @@ function CarSelector({
             <>
               <Separator className="my-4" />
               <p className="font-semibold">
-                {isDisabled ? 'Please select a color' : 'Cover Types'}
+                {isDisabled ? 'Please select a color' : 'Cover Types:'}{' '}
+                <span className="font-normal">
+                  {activeSku && `${activeSku?.display_id}`}
+                </span>
               </p>
             </>
           )}
@@ -254,11 +269,11 @@ function CarSelector({
           <div className="grid grid-cols-1 gap-4">
             <div className="h-20">
               <h2 className="text-2xl font-bold text-dark pb-4">
-                {`${displayedProduct?.year_generation}
-                ${displayedProduct?.make} ${displayedProduct?.product_name}`}
+                {`${activeSku?.year_generation}
+                ${activeSku?.make} ${activeSku?.product_name}`}
                 &trade;{' '}
                 {`
-                ${displayedProduct?.display_id} ${displayedProduct?.display_color}`}
+                ${activeSku?.display_id} ${activeSku?.display_color}`}
               </h2>
             </div>
             <div className="flex flex-start items-center leading-4">
@@ -276,20 +291,16 @@ function CarSelector({
           {/* Pricing */}
           <div className="pt-4">
             <div className="grid grid-cols-1">
-              <p className="text-dark text-3xl font-bold">
-                ${displayedProduct?.msrp}
-              </p>
-              <p className="text-dark text-lg">
-                <span className="text-base  line-through opacity-50">
-                  ${displayedProduct?.price}
-                </span>{' '}
-                Save 50% ( $
-                {String(
-                  Number(displayedProduct?.price) -
-                    Number(displayedProduct?.msrp)
-                )}
-                )
-              </p>
+              <p className="text-dark text-3xl font-bold">${activeSku?.msrp}</p>
+              {activeSku?.price && (
+                <p className="text-dark text-lg">
+                  <span className="text-base  line-through opacity-50">
+                    ${activeSku?.price}
+                  </span>
+                  Save 50% ( $
+                  {String(Number(activeSku?.price) - Number(activeSku?.msrp))})
+                </p>
+              )}
             </div>
           </div>
           {/* Product Description */}
