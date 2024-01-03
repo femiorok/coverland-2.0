@@ -74,7 +74,10 @@ export default function SubDropdowns({
 
   console.log(pathname);
 
-  const hasSubmodel = modelData.filter((car) => car?.submodel1).length > 0;
+  console.log(modelData.filter((car) => car?.submodel1));
+
+  const hasSubmodel = new Set(modelData.map((car) => car?.submodel1)).size > 1;
+  console.log(hasSubmodel);
   const hasSecondSubModel =
     modelData.filter((car) => car?.submodel2).length > 0;
 

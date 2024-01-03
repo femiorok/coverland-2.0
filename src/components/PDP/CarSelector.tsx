@@ -28,13 +28,19 @@ import { match } from 'assert';
 import { get } from 'http';
 import { Popover } from '@radix-ui/react-popover';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
+import { unique } from 'next/dist/build/utils';
 
 function CarSelector({
   modelData,
   pathParams,
+  submodelData,
 }: {
   modelData: TProductData[];
   pathParams: TPDPPathParams;
+  submodelData: {
+    uniqueSubmodel1: string[];
+    uniqueSubmodel2: string[];
+  };
 }) {
   const [coverOptionSelections, setCoverOptionSelections] = useState<{
     color: string | undefined;
@@ -50,6 +56,7 @@ function CarSelector({
   const { addToCart } = useCartContext();
 
   const { color, cover, sku } = coverOptionSelections;
+  const { uniqueSubmodel1, uniqueSubmodel2 } = submodelData;
 
   const isReadyForSelection =
     modelData.filter(
@@ -58,12 +65,12 @@ function CarSelector({
         model.year_generation === modelData[0].year_generation
     ).length === modelData.length;
 
+  console.log;
+
   console.log('isReadyForSelection', isReadyForSelection);
 
-  const hasSubmodels = modelData.find((model) => model.submodel1 !== '')
-    ? true
-    : false;
-  console.log(hasSubmodels);
+  const hasSubmodels = uniqueSubmodel1.length > 0 || uniqueSubmodel2.length > 0;
+  // const isSubmodelComplete = !hasSubmodels ||
 
   const getDefaultModelDisplayData = (
     model: TProductData,
@@ -195,7 +202,7 @@ function CarSelector({
               : `Please select your car's details below`}
             :{' '}
             <span className="font-normal">
-              {activeSku && `${activeSku?.display_color}`}
+              {isReadyForSelection && `${activeSku?.display_color}`}
             </span>
           </p>
           <div className="grid grid-cols-5 w-auto gap-4 ">
@@ -234,7 +241,7 @@ function CarSelector({
               <p className="font-semibold">
                 {isDisabled ? 'Please select a color' : 'Cover Types:'}{' '}
                 <span className="font-normal">
-                  {activeSku && `${activeSku?.display_id}`}
+                  {isReadyForSelection && `${activeSku?.display_id}`}
                 </span>
               </p>
             </>

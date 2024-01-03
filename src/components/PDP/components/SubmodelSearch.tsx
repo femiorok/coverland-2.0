@@ -36,7 +36,7 @@ export function SubmodelSearch({
 
   console.log(uniqueSubmodel1);
 
-  if (!uniqueSubmodel1.length) return null;
+  if (uniqueSubmodel1.length < 2) return null;
 
   return (
     <Popover open={open} onOpenChange={(open) => setOpen(open)}>

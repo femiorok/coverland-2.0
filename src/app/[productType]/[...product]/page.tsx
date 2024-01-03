@@ -61,6 +61,10 @@ export default async function ProductPDP({
   const uniqueSubmodel1 = getUniqueSubmodel1();
   const uniqueSubmodel2 = getUniqueSubmodel2();
 
+  const submodelData = { uniqueSubmodel1, uniqueSubmodel2 };
+
+  console.log('submodelData', submodelData);
+
   console.log('uniqueSubmodel1', uniqueSubmodel1);
   console.log('uniqueSubmodel2', uniqueSubmodel2);
 
@@ -89,7 +93,11 @@ export default async function ProductPDP({
 
   return (
     <>
-      <CarSelector modelData={dataByParams} pathParams={pathParams} />
+      <CarSelector
+        modelData={dataByParams}
+        pathParams={pathParams}
+        submodelData={submodelData}
+      />
       <div
         id="product-details"
         className="w-full h-auto flex flex-col justify-center items-center max-w-[1440px] py-4 lg:py-20 px-4 md:px-20"
