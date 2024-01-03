@@ -41,6 +41,29 @@ export default async function ProductPDP({
   const modelData = productData?.filter((item) => item.msrp);
   console.log('modelData', modelData);
 
+  const hasSubmodels = modelData.some(
+    (model) => model.submodel1_slug || model.submodel2_slug
+  );
+  console.log('hasSubmodels', hasSubmodels);
+
+  const getUniqueSubmodel1 = () => {
+    const submodel1 = modelData.map((model) => model.submodel1_slug);
+    const uniqueSubmodel1 = [...new Set(submodel1)];
+    return uniqueSubmodel1;
+  };
+
+  const getUniqueSubmodel2 = () => {
+    const submodel2 = modelData.map((model) => model.submodel2_slug);
+    const uniqueSubmodel2 = [...new Set(submodel2)];
+    return uniqueSubmodel2;
+  };
+
+  const uniqueSubmodel1 = getUniqueSubmodel1();
+  const uniqueSubmodel2 = getUniqueSubmodel2();
+
+  console.log('uniqueSubmodel1', uniqueSubmodel1);
+  console.log('uniqueSubmodel2', uniqueSubmodel2);
+
   const modelDataByYear = searchParams.year
     ? modelData.filter(
         (model) =>

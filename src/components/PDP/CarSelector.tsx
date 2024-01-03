@@ -51,12 +51,6 @@ function CarSelector({
 
   const { color, cover, sku } = coverOptionSelections;
 
-  const activeSku = modelData.filter(
-    (model) => model.display_color === color && model.display_id === cover
-  )[0];
-
-  console.log('activeSku', activeSku);
-
   const isReadyForSelection =
     modelData.filter(
       (model) =>
@@ -65,6 +59,11 @@ function CarSelector({
     ).length === modelData.length;
 
   console.log('isReadyForSelection', isReadyForSelection);
+
+  const hasSubmodels = modelData.find((model) => model.submodel1 !== '')
+    ? true
+    : false;
+  console.log(hasSubmodels);
 
   const getDefaultModelDisplayData = (
     model: TProductData,
@@ -88,9 +87,16 @@ function CarSelector({
     modelData
   );
 
+  const activeSku =
+    modelData.filter(
+      (model) => model.display_color === color && model.display_id === cover
+    )[0] ?? defaultModel;
+
   const displayedProduct = isReadyForSelection
     ? modelData.filter((model) => model.sku === sku)[0] ?? modelData[0]
     : defaultModel;
+
+  const isReadyForCart = hasSubmodels === !!activeSku?.submodel1;
 
   console.log(modelData, displayedProduct, coverOptionSelections);
 
@@ -349,7 +355,7 @@ function CarSelector({
                 </PopoverTrigger>
                 <PopoverContent>
                   <div className="">
-                    <p>Please select a product above</p>
+                    <p>Please finish your selection</p>
                   </div>
                 </PopoverContent>
               </Popover>
