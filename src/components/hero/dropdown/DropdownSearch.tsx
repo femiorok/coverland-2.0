@@ -123,7 +123,7 @@ export function DropdownSearch() {
       <MakeSearch queryObj={queryObj} makeData={makeData} />
       <ModelSearch queryObj={queryObj} modelData={modelData} />
       <Button
-        className="h-[60px] text-lg"
+        className="h-[58px] text-lg"
         onClick={() => goToProductPage(query)}
       >
         Go
