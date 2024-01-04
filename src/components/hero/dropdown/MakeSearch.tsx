@@ -7,12 +7,14 @@ import { TProductData } from '@/lib/db';
 export function MakeSearch({
   queryObj,
   makeData,
+  isLoading,
 }: {
   queryObj: {
     query: TQuery;
     setQuery: React.Dispatch<React.SetStateAction<TQuery>>;
   };
   makeData: string[];
+  isLoading: boolean;
 }) {
   const [value, setValue] = useState('');
   const { setQuery, query } = queryObj;
@@ -31,12 +33,16 @@ export function MakeSearch({
       disabled={!query.type || !query.year}
       className="w-[275px] h-[58px] text-lg rounded-lg  px-2"
     >
-      <option value="">Select car make</option>
-      {sortedData.map((make) => (
-        <option key={make} value={make}>
-          {make}
-        </option>
-      ))}
+      <option value="" disabled selected>
+        Select car make
+      </option>
+      {isLoading
+        ? 'Loading...'
+        : sortedData.map((make) => (
+            <option key={make} value={make}>
+              {make}
+            </option>
+          ))}
     </select>
   );
 }

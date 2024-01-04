@@ -42,7 +42,7 @@ export function DropdownSearch() {
     model: '',
   });
   const router = useRouter();
-  const data = useProductData({
+  const { data, isLoading } = useProductData({
     where: {
       type: query.type ?? '',
     },
@@ -60,19 +60,17 @@ export function DropdownSearch() {
 
   console.log('query', query);
 
-  console.log('data', data?.data);
+  console.log('data', data);
 
   const makeData = [
-    ...new Set(
-      data?.data?.map((d) => d.make).filter((val): val is string => !!val)
-    ),
+    ...new Set(data?.map((d) => d.make).filter((val): val is string => !!val)),
   ];
   console.log('makeData', makeData);
   console.log(query.make);
 
   const modelData = [
     ...new Set(
-      data?.data
+      data
         ?.filter((car) => query.make === car.make && !!car?.model)
         ?.map((d) => d.model)
         .filter((val): val is string => !!val)
@@ -120,8 +118,16 @@ export function DropdownSearch() {
     <div className="flex gap-2 flex-col md:flex-row relative font-medium">
       <TypeSearch queryObj={queryObj} />
       <YearSearch queryObj={queryObj} />
-      <MakeSearch queryObj={queryObj} makeData={makeData} />
-      <ModelSearch queryObj={queryObj} modelData={modelData} />
+      <MakeSearch
+        queryObj={queryObj}
+        makeData={makeData}
+        isLoading={isLoading}
+      />
+      <ModelSearch
+        queryObj={queryObj}
+        modelData={modelData}
+        isLoading={isLoading}
+      />
       <Button
         className="h-[58px] text-lg"
         onClick={() => goToProductPage(query)}
