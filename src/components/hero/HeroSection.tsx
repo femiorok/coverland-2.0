@@ -17,7 +17,7 @@ const HeroSection = () => {
           <div className="flex flex-col justify-between items-start px-4">
             <div className="flex flex-col justify-start xs:items-start md:items-center">
               <div className="pb-2">
-                <p className="text-5xl text-left font-semibold text-white uppercase">
+                <p className="text-6xl text-left font-black text-white uppercase">
                   Select your Vehicle
                 </p>
               </div>

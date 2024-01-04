@@ -117,7 +117,7 @@ export function DropdownSearch() {
   console.log('obj', queryObj);
 
   return (
-    <div className="flex gap-2 flex-col md:flex-row relative">
+    <div className="flex gap-2 flex-col md:flex-row relative font-medium">
       <TypeSearch queryObj={queryObj} />
       <YearSearch queryObj={queryObj} />
       <MakeSearch queryObj={queryObj} makeData={makeData} />
