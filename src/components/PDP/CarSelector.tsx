@@ -115,7 +115,7 @@ function CarSelector({
     return addToCart({ ...selectedProduct, quantity: 1 });
   };
 
-  const productImages = displayedProduct?.product?.split(',') ?? [];
+  const productImages = activeSku?.product?.split(',') ?? [];
 
   const colorOptions = groupProductsBy('display_color', modelData);
   const coverTypeOptions = groupProductsBy('display_id', modelData);
@@ -252,6 +252,8 @@ function CarSelector({
                 const productOption = modelData.find(
                   (prod) => prod.display_id === option
                 );
+                const is = productOption?.display_id === activeSku?.display_id;
+                console.log(productOption?.display_id, is);
                 return (
                   <button
                     className="flex flex-col justify-center items-center"
@@ -259,14 +261,18 @@ function CarSelector({
                     onClick={() =>
                       setCoverOptionSelections({
                         cover: option,
-                        color: coverOptionSelections.color,
-                        sku: coverOptionSelections.sku,
+                        color: productOption?.display_id as string,
+                        sku: productOption?.sku,
                       })
                     }
                     disabled={isOptionDisabled(productOption, 'cover')}
                   >
                     <Image
-                      src={productOption?.feature as string}
+                      src={
+                        is
+                          ? activeSku.feature ?? ''
+                          : (productOption?.feature as string)
+                      }
                       width={100}
                       height={100}
                       alt="car cover details"
@@ -385,23 +391,6 @@ function CarSelector({
               </Button>
             )}
           </div>
-
-          {/* Button and borrowing info stuff */}
-          {/* {selected.submodel !== '' ? (
-        <div className="flex-row mb-5 bg-offWhite rounded-xl">
-          <div className="p-4">
-            <div>
-              <p className="text-dark font-semibold">
-                Vehicle Options Selected:
-              </p>
-            </div>
-            <div className="text-dark">{selected.submodel}</div>
-            <div className="text-dark">{selected.submodelOption}</div>
-          </div>
-        </div>
-      ) : (
-        <></>
-      )} */}
           <div className="pt-4">
             <p className="text-dark text-xs">
               As low as <span className="font-semibold">$32.50/mo</span> with{' '}

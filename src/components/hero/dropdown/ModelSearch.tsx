@@ -37,7 +37,7 @@ export function ModelSearch({
       <option value="">Select car model</option>
       {isLoading
         ? 'Loading...'
-        : modelData?.map((model) => (
+        : modelData?.sort()?.map((model) => (
             <option key={`model-${model}`} value={model}>
               {model}
             </option>
