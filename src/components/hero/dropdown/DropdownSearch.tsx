@@ -68,6 +68,7 @@ export function DropdownSearch() {
     ),
   ];
   console.log('makeData', makeData);
+  console.log(query.make);
 
   const modelData = [
     ...new Set(
