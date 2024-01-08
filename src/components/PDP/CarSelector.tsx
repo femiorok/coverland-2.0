@@ -458,6 +458,56 @@ function CarSelector({
               </div>
             </div>
           </div>
+          <div className="px-4 lg:px-0 pt-4 lg:pt-0">
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                Tailored to your car model
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                all-season waterproof protection
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                Scratchproof, durable & lightweight
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                Soft Inner-lining
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                100% Waterproof - Zero Leaks Guaranteed
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                100% UV Protection
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                Easy On/Off with elastic hems
+              </p>
+            </div>
+            <div className="flex flex-start items-center leading-4 pb-2">
+              <GoDotFill size={10} color="#000000 " />
+              <p className="text-dark font-normal text-base pl-1 capitalize">
+                effortless cleaning
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
