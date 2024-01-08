@@ -13,6 +13,7 @@ console.log(supabaseUrl, supabaseKey);
 const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
 export type TProductData = Database['public']['Tables']['Products-2024']['Row'];
+export type TModelFitData = Database['public']['Tables']['Products']['Row'];
 
 export type TTables = keyof Database['public']['Tables'];
 
@@ -75,6 +76,21 @@ export async function fetchSubmodelsOfModel(model: string) {
   };
 }
 
+export async function getDropDownOptions(type: string, year: string) {
+  let { data, error } = await supabase
+    .from('Products')
+    .select('*')
+    .textSearch('year_options', year)
+    .eq('type', type);
+
+  const options = data?.map((row) => row[type]) ?? [];
+
+  if (error) {
+    console.log(error);
+  }
+  return options;
+}
+
 export async function fetchFilteredProducts({
   where,
   includes,
@@ -87,6 +103,7 @@ export async function fetchFilteredProducts({
 
     if (where) {
       Object.entries(where).forEach(([key, value]) => {
+        if (!key || !value) return;
         console.log('updating query');
 
         if (key && value) query = query.eq(key, value);
@@ -116,6 +133,8 @@ export async function fetchFilteredProducts({
           submodel2: item.submodel2,
           year_range: item.year_range,
           slug: item.product_url_slug,
+          generation: item.year_generation,
+          sku: item.sku,
         };
       })
       .filter(
@@ -150,6 +169,35 @@ export async function fetchPDPData(
   return data;
 }
 
+export async function fetchPDPDataApi(fkey: string) {
+  // const { data, error } = await supabase
+  //   .from('Products')
+  //   .select('*')
+  //   .eq('fk', fkey);
+
+  const modelData = await supabase
+    .from('Products-2024')
+    .select('*')
+    .textSearch('sku', fkey);
+  console.log(modelData);
+
+  return modelData;
+}
+
+export async function fetchModelToDisplay(fk: string) {
+  const { data, error } = await supabase
+    .from('Products')
+    .select('*')
+    .eq('fk', fk);
+
+  console.log(data);
+
+  if (error) {
+    console.log(error);
+  }
+  return data;
+}
+
 export async function fetchPDPDataWithQuery(
   queryParams: TPDPQueryParams,
   params: TPDPPathParams
@@ -167,7 +215,7 @@ export async function fetchPDPDataWithQuery(
     .select()
     .eq('model_slug', model)
     .eq('make_slug', make)
-    .textSearch('year_range', year);
+    .textSearch('year_generation', year);
 
   if (submodel1) {
     console.log('submodel1', submodel1);
@@ -179,6 +227,7 @@ export async function fetchPDPDataWithQuery(
   }
 
   const { data, error } = await fetch;
+  console.log(data);
 
   console.log('fetching with query params', data?.length);
   if (error) {

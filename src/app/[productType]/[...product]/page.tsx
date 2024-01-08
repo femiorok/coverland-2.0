@@ -23,6 +23,7 @@ export default async function ProductPDP({
   searchParams: TPDPQueryParams;
 }) {
   console.log('pathParams', pathParams);
+  console.log('searchParams', searchParams);
   if (
     pathParams.productType !== 'car-covers' &&
     pathParams.productType !== 'suv-covers' &&

@@ -31,7 +31,7 @@ export function MakeSearch({
       value={value}
       onChange={handleChange}
       disabled={!query.type || !query.year}
-      className="w-[275px] h-[58px] text-lg rounded-lg  px-2"
+      className="text-lg rounded-lg  px-2"
     >
       <option value="" disabled selected>
         Select car make
