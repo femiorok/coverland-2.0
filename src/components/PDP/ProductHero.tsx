@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import product from '@/images/PDP/product_details_01.webp';
+import WhiteLogo from '@/images/logos/logo-white.png';
 
 export function ProductHero() {
   return (
@@ -10,18 +11,28 @@ export function ProductHero() {
           src={product}
           placeholder="blur"
           quality={75}
-          style={{ objectFit: 'cover' }}
+          className="object-cover w-full"
         />
       </div>
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center">
-        <p className="text-white font-black text-3xl uppercase text-center">
+      <div className="absolute top-2.5 md:top-[75px] left-0 w-full h-full flex flex-col items-center">
+        <p className="text-white font-black sm:text-xl md:text-3xl lg:text-5xl uppercase text-center">
           Your car deserves the Best
         </p>
-        <p className="capitalize text-off font-normal pt-4 flex flex-row flex-nowrap">
+        <p className="capitalize text-white opacity-80 text-lg md:text-2xl font-normal pt-4 flex flex-row flex-nowrap tracking-[0.48px]">
           Timeless Resilience
-          <br className="lg:hidden" />
+          <br className="invisible md:visible" />
           <span className="hidden lg:block mr-1">. </span> Ultimate durability
         </p>
+      </div>
+
+      <div className="absolute bottom-2.5 md:bottom-[57px] left-2.5 md:left-[71px]">
+        <Image
+          alt="coverland"
+          src={WhiteLogo}
+          placeholder="blur"
+          width={184}
+          height={31}
+        />
       </div>
     </div>
   );

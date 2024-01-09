@@ -95,7 +95,10 @@ function Header() {
         </div> */}
       </section>
       <div className="text-white text-center w-full  font-bold leading-6 bg-zinc-900 justify-center items-center mt-5 py-3.5 ">
-        FREE SHIPPING ON ORDERS OVER $75
+        <p className="text-lg md:text-xl lg:text-4xl font-bold italic text-[#FF0000] uppercase">
+          Flash Sale: 50% off{' '}
+          <span className="text-white">sale ends 10/32 </span>{' '}
+        </p>
       </div>
     </header>
   );
