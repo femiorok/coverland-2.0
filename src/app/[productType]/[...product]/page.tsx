@@ -1,11 +1,8 @@
 import { TProductData, fetchPDPData, fetchPDPDataWithQuery } from '@/lib/db';
-import Image from 'next/image';
 import CarSelector from '@/components/PDP/CarSelector';
-import KeepDry from '@/images/PDP/keep_dry.webp';
-import LayerImg from '@/images/PDP/layer_breakdown.webp';
-import Material from '@/images/PDP/material-right.webp';
-import ZeroLeaks from '@/images/PDP/zero_leaks.webp';
+
 import { redirect } from 'next/navigation';
+import { ExtraProductDetails } from '@/components/PDP/OtherDetails';
 
 export type TPDPPathParams = { productType: string; product: string[] };
 
@@ -101,169 +98,20 @@ export default async function ProductPDP({
       />
       <div
         id="product-details"
-        className="w-full h-auto flex flex-col justify-center items-center max-w-[1440px] py-4 lg:py-20 px-4 md:px-20"
+        className="w-full h-auto"
+        // flex flex-col justify-center items-center max-w-[1440px] py-4 lg:py-20 px-4 md:px-20"
       >
-        {/* <ProductHero /> */}
-        <Video />
-        <Layers />
+        <ExtraProductDetails />
       </div>
     </>
   );
 }
 
-function ProductHero() {
+function BreadCrumbsTitle() {
   return (
-    <div className="pdp-info-hero">
-      <div className="flex flex-col justify-between lg:justify-start items-center w-full h-full lg:pt-16 py-16 px-4">
-        <p className="text-white font-black text-3xl uppercase text-center">
-          Your Car Deserves the Best
-        </p>
-        <p className="capitalize text-off font-normal pt-4 flex flex-row flex-nowrap">
-          Timeless Resilience
-          <br className="lg:hidden" />
-          <span className="hidden lg:block mr-1">. </span> Ultimate durability
-        </p>
-      </div>
+    <div className="w-full mt-8">
+      <h6 className="text-[#343434] text-sm font-normal">Home / Car Covers</h6>
     </div>
-  );
-}
-
-function Video() {
-  return (
-    <div
-      id="productvideo"
-      className="py-8 md:py-8 md:px-20 w-screen h-auto flex flex-col justify-center items-center max-w-full "
-    >
-      <video src="/video/coverland.webm" controls className="w-full h-full" />
-      <div className="w-full h-auto bg-[#1A1A1A] flex flex-col justify-center items-start py-8 px-4 lg:px-8">
-        <div>
-          <p className="text-white font-semibold text-3xl uppercase text-left">
-            Tailored for the perfect fit
-          </p>
-        </div>
-        <div className="pb-4">
-          <p className="text-white text-xs uppercase ">
-            Your Car, Your Shield. Experience the superior custom fit we offer.{' '}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Layers() {
-  return (
-    <>
-      <div className="w-full h-auto flex flex-col flex-start justify-start pb-8 ">
-        <p className="text-dark font-normal text-base">High Quality</p>
-        <p className="text-dark font-black text-3xl uppercase text-left">
-          Engineered to Perfection
-        </p>
-      </div>
-      <div className="w-full h-full flex flex-col lg:flex-row bg-[#F9F9FB]">
-        <div className="w-full lg:w-2/4 pb-8 lg:pb-0">
-          <Image
-            src={LayerImg}
-            alt="a car sitting inside of a building"
-            width={500}
-            height={500}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="grid grid-cols-1 gap-8 w-full lg:w-2/4 items-center px-4 lg:px-16">
-          <div className="grid grid-cols-1 gap-4">
-            <p className="text-dark font-semibold capitalize text-lg">
-              Next-Level Waterproof
-            </p>
-            <p className="text-dark font-normal  text-base">
-              Extra waterproof Coating Provides the Ultimate Shield Against Rain
-              and Moisture as well as the Elements.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4">
-            <p className="text-dark font-semibold capitalize text-lg">
-              Beyond Resilience
-            </p>
-            <p className="text-dark font-normal  text-base">
-              Made with Top-Quality Premium Polyester, Our Cover Ensures
-              Resilience. enjoy Year-Round Security in All Climates
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4">
-            <p className="text-dark font-semibold capitalize text-lg">
-              everlasting color
-            </p>
-            <p className="text-dark font-normal  text-base">
-              Our Exclusive Coating Preserves the Original Color, preventing
-              Fading Over Time.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="w-full h-auto grid grid-cols-1 lg:grid-cols-3 gap-2 pt-8 ">
-        <div className="flex flex-col">
-          <div className="h-[200px]">
-            <Image
-              src={ZeroLeaks}
-              alt="seams of a cover"
-              width={500}
-              height={500}
-              className="w-full h-full"
-            />
-          </div>
-          <div className="pt-2">
-            <p className="text-dark font-semibold capitalize text-lg">
-              Zero Leaks
-            </p>
-            <p className="pt-1 text-dark font-normal  text-base">
-              Stay Dry! Our specialized sealing tape is engineered to keep your
-              car completely dry.
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="h-[200px]">
-            <Image
-              src={Material}
-              alt="seams of a cover"
-              width={500}
-              height={500}
-              className="w-full h-full"
-            />
-          </div>
-          <div className="pt-2">
-            <p className="text-dark font-semibold capitalize text-lg">
-              Soft Touch
-            </p>
-            <p className="pt-1 text-dark font-normal  text-base">
-              Gentle on Paint, Tough on Elements! Lined with soft fleece for a
-              perfect balance of comfort and durability.
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="h-[200px]">
-            <Image
-              src={KeepDry}
-              alt="seams of a cover"
-              width={500}
-              height={500}
-              className="w-full h-full"
-            />
-          </div>
-          <div className="pt-2">
-            <p className="text-dark font-semibold capitalize text-lg">
-              Keeps it dry
-            </p>
-            <p className="pt-1 text-dark font-normal  text-base">
-              This car cover is one of the lightest you can find. Our covers are
-              made from a meshwork of almost weightless fibers and a fluffy
-              cotton interior.{' '}
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
   );
 }
 

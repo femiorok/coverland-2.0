@@ -38,16 +38,16 @@ const NewsletterForm = () => {
       <form onSubmit={handleSubmit} className="flex flex-row h-12">
         <input
           type="email"
-          placeholder="you@email.com"
+          placeholder="Your Email"
           value={email_address}
           onChange={(e) => setEmail(e.target.value)}
-          className="bg-white w-full rounded-l-xl p-4 text-dark"
+          className="bg-white w-full rounded-l p-4 text-[#767676]"
         />
         <button
           type="submit"
-          className=" w-12 h-12 rounded-r-xl bg-[#185CFF] duration-300 hover:bg-red flex flex-col justify-center items-center"
+          className=" w-12 h-12 bg-[#BE1B1B] duration-300 hover:bg-red flex flex-col justify-center items-center"
         >
-          <BsChevronRight size={20} />
+          <BsChevronRight size={20} color={'#fff'} />
         </button>
       </form>
       {message && <p className="pt-4">{message}</p>}
