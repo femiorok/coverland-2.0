@@ -94,7 +94,7 @@ function CarSelector({
         {/* Left Panel */}
         <div className=" h-auto w-full lg:w-3/5 flex flex-col justify-center items-stretch pb-8 lg:pb-0 mt-[29px]">
           {/* Featured Image */}
-          <div className="w-full h-[400px] md:h-[550px] lg:h-[745px] rounded-xl bg-[#F2F2F2] flex justify-center items-center">
+          <div className="w-full h-[400px] md:h-[500px] lg:h-[650px] rounded-xl bg-[#F2F2F2] flex justify-center items-center">
             <Image
               id="featured-image"
               src={featuredImage ?? ''}
@@ -109,7 +109,7 @@ function CarSelector({
           <ProductVideo />
           {/* Gallery Images */}
           <div className="grid grid-cols-2 w-auto gap-[16px] pt-4">
-            {productImages.slice(0, 3).map((img, idx) => (
+            {productImages.slice(0, 4).map((img, idx) => (
               <div
                 className="w-full h-auto md:h-[350px] bg-[#F2F2F2] rounded-xl p-3.5 border-transparent"
                 key={img}
@@ -120,11 +120,11 @@ function CarSelector({
                   width={200}
                   height={200}
                   alt="car cover details"
-                  className={`w-full h-full cursor-pointer object-cover ${
-                    selectedProduct.product?.includes(img)
-                      ? 'border-4 border-red-600 rounded-lg'
-                      : ''
-                  }}`}
+                  className={`w-full h-full cursor-pointer object-cover 
+                    // selectedProduct.product?.includes(img)
+                    //   ? 'border-4 border-red-600 rounded-lg'
+                    //   : ''
+                  `}
                   onClick={() => setFeaturedImage(img)}
                 />
               </div>
