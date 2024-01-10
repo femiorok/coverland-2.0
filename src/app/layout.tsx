@@ -9,9 +9,10 @@ import Footer from '@/pages/home/Footer';
 import { Toaster } from '@/components/ui/toaster';
 
 const roboto = Roboto({
-  weight: '400',
+  weight: ['400', '500', '700', '900'],
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-roboto',
 });
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${roboto.className}`}>
+      <body className={`${roboto.className} ${roboto.variable}`}>
         <main className="max-w-[1440px] mx-auto px-4">
           <Providers>
             <Header />

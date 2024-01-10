@@ -213,7 +213,7 @@ function CarSelector({
           {/* Title and Descriptions*/}
           <div className="grid grid-cols-1 gap-4">
             <div className="lg:h-20">
-              <h2 className="text-lg md:text-[28px] font-black text-[#1A1A1A] pb-4">
+              <h2 className="text-lg md:text-[28px] font-roboto font-extrabold text-[#1A1A1A] pb-4">
                 {`${selectedProduct?.year_generation}
                 ${selectedProduct?.make} ${selectedProduct?.product_name} ${selectedProduct?.display_id}`}
                 &trade; {`${selectedProduct?.display_color}`}
