@@ -24,10 +24,22 @@ export type TQuery = {
   model?: string;
 };
 
-export function DropdownPDP({ modelData }: { modelData: TProductData[] }) {
+export function DropdownPDP({
+  modelData,
+  submodels,
+  secondSubmodels,
+}: {
+  modelData: TProductData[];
+  submodels: string[];
+  secondSubmodels: string[];
+}) {
   return (
     <div className="flex flex-col gap-2 md:w-[400px] w-full">
-      <SubDropdowns modelData={modelData} />
+      <SubDropdowns
+        modelData={modelData}
+        submodels={submodels}
+        secondSubmodels={secondSubmodels}
+      />
     </div>
   );
 }

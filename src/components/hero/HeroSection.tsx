@@ -1,4 +1,4 @@
-import { DropdownSearch } from './dropdown/DropdownSearch';
+import { HeroDropdown } from './dropdown/HeroDropdown';
 import bg from '/public/images/hero/home-hero_D.webp';
 
 const HeroSection = () => {
@@ -29,7 +29,7 @@ const HeroSection = () => {
             </div>
           </div>
           <div id="desktop-filter" className="pt-16 hidden w-full lg:block">
-            <DropdownSearch />
+            <HeroDropdown />
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@ const HeroSection = () => {
         id="mobile-filter"
         className="pt-4 md:pt-20 w-full flex flex-col items-center bg-[#F9F9FB] md:hidden"
       >
-        <DropdownSearch />
+        <HeroDropdown />
       </div>
     </section>
   );

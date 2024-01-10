@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useState } from 'react';
 import { TProductData } from '@/lib/db';
-import { TQuery } from './DropdownSearch';
+import { TQuery } from './HeroDropdown';
 
 export function YearSearch({
   queryObj,

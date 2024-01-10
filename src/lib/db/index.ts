@@ -76,21 +76,6 @@ export async function fetchSubmodelsOfModel(model: string) {
   };
 }
 
-export async function getDropDownOptions(type: string, year: string) {
-  let { data, error } = await supabase
-    .from('Products')
-    .select('*')
-    .textSearch('year_options', year)
-    .eq('type', type);
-
-  const options = data?.map((row) => row[type]) ?? [];
-
-  if (error) {
-    console.log(error);
-  }
-  return options;
-}
-
 export async function fetchFilteredProducts({
   where,
   includes,
@@ -150,17 +135,40 @@ export async function fetchFilteredProducts({
   }
 }
 
+export const getAllDefaultGenerations = async () => {
+  const { data, error } = await supabase
+    .from('Products')
+    .select('generation_default')
+    .not('generation_default', 'is', null);
+
+  if (error) {
+    console.log(error);
+  }
+
+  const set = Array.from(new Set(data?.map((row) => row.generation_default)));
+  return set;
+};
+
 export async function fetchPDPData(
   pathParams: TPDPPathParams
 ): Promise<TProductData[] | null> {
   const modelFromPath = pathParams?.product[1];
   const makeFromPath = pathParams?.product[0];
+  const yearFromPathStart = pathParams?.product[2]?.split('-')[0];
+  const yearFromPathEnd = pathParams?.product[2]?.split('-')[1];
+
+  console.log(modelFromPath, makeFromPath, yearFromPathStart, yearFromPathEnd);
 
   const { data, error } = await supabase
     .from('Products-2024')
     .select('*')
     .eq('make_slug', makeFromPath)
-    .eq('model_slug', modelFromPath);
+    .eq('model_slug', modelFromPath)
+    .or(
+      `year_range.ilike.%${yearFromPathStart}%,year_range.ilike.%${yearFromPathEnd}%`
+    );
+
+  console.log('pdp', data);
 
   console.log('fetching with path params', data?.length, modelFromPath);
   if (error) {
@@ -169,7 +177,7 @@ export async function fetchPDPData(
   return data;
 }
 
-export async function fetchPDPDataApi(fkey: string) {
+export async function fetchDropdownData(fkey: string) {
   // const { data, error } = await supabase
   //   .from('Products')
   //   .select('*')
@@ -202,11 +210,9 @@ export async function fetchPDPDataWithQuery(
   queryParams: TPDPQueryParams,
   params: TPDPPathParams
 ): Promise<TProductData[] | null> {
-  if (!queryParams?.year) return null;
-
   const make = params?.product[0];
   const model = params?.product[1];
-  const year = queryParams?.year;
+  const year = params?.product[2];
   const submodel1 = queryParams?.submodel;
   const submodel2 = queryParams?.second_submodel;
 
@@ -215,7 +221,7 @@ export async function fetchPDPDataWithQuery(
     .select()
     .eq('model_slug', model)
     .eq('make_slug', make)
-    .textSearch('year_generation', year);
+    .eq('year_generation', year);
 
   if (submodel1) {
     console.log('submodel1', submodel1);
@@ -225,6 +231,8 @@ export async function fetchPDPDataWithQuery(
   if (submodel2) {
     fetch = fetch.textSearch('submodel2_slug', submodel2);
   }
+
+  console.log(make, model, year, submodel1);
 
   const { data, error } = await fetch;
   console.log(data);

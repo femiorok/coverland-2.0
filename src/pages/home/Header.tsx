@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
+import { generationDefaultKeys } from '@/lib/constants';
 
 function removeDuplicates(items: any[]) {
   const uniqueItems: any = [];
@@ -32,9 +33,9 @@ function removeDuplicates(items: any[]) {
   console.log(objectIds);
 
   items.forEach((item) => {
-    if (!objectIds.has(item.objectID)) {
+    if (!objectIds.has(`${item.model}-${item.submodel1}`)) {
       uniqueItems.push(item);
-      objectIds.add(item.objectID);
+      objectIds.add(item.model);
     }
   });
 
@@ -55,15 +56,7 @@ function Header() {
           <div className="flex w-full items-center self-center relative min-h-[39px] gap-2.5 pt-2.5 pb-1 px-5 max-md:max-w-full max-md:flex-wrap">
             <AlgoliaWrapper>
               <AlgoliaSearchBox setShowHits={setShowHits} />
-              <NoResultsBoundary showHits={showHits}>
-                <Hits
-                  classNames={{
-                    root: 'w-[300px] h-[300px] bg-gray-100 flex-col z-50 absolute top-14 text-center overflow-y-scroll rounded',
-                  }}
-                  hitComponent={({ hit }) => <CustomHits hit={hit} />}
-                  transformItems={removeDuplicates}
-                />
-              </NoResultsBoundary>
+              {showHits && <SearchHits />}
             </AlgoliaWrapper>
             {/* <input
               className="relative flex text-lg p-2 bg-gray-100 rounded-2xl leading-6 self-center grow shrink basis-auto my-auto"
@@ -103,24 +96,28 @@ function Header() {
 
 export default Header;
 
-const CustomHits = ({ hit }) => {
+const SearchHits = () => {
   const { refine } = useSearchBox();
   const { hits } = useHits();
 
-  const hitsSkus = hits.map((hit) => hit.model).slice(1, hits.length - 1);
-  if (hitsSkus.includes(hit.model)) return null;
+  const uniqueHits = removeDuplicates(hits);
+  const hitsToDisplay = uniqueHits.filter((hit: any) =>
+    generationDefaultKeys.includes(hit.sku.slice(-6))
+  );
+
+  console.log(hitsToDisplay);
 
   return (
-    <div
-      className="hover:bg-gray-300 my-2 "
-      key={hit.sku}
-      onBlur={() => refine('')}
-    >
-      <Link href={hit.product_url_slug}>
-        <p>
-          {hit.make} {hit.model}
-        </p>
-      </Link>
+    <div className="w-[300px] max-h-32 bg-gray-100 flex-col z-50 absolute top-14 text-center overflow-y-scroll rounded">
+      {hitsToDisplay.map((hit: any) => (
+        <div className="hover:bg-gray-300 my-2 " key={hit.sku}>
+          <Link href={hit.product_url_slug}>
+            <p>
+              {hit.make} {hit.model} {hit.submodel1}
+            </p>
+          </Link>
+        </div>
+      ))}
     </div>
   );
 };

@@ -9,7 +9,12 @@ import { useRouter } from 'next/navigation';
 import { useProductData } from '@/lib/db/hooks/useProductData';
 import { useEffect, useState } from 'react';
 import { SubmodelDropdown } from './SubmodelDropdown';
-import { TModelFitData, TProductData, fetchModelToDisplay } from '@/lib/db';
+import {
+  TModelFitData,
+  TProductData,
+  fetchDropdownData,
+  fetchModelToDisplay,
+} from '@/lib/db';
 
 export type TQuery = {
   year: string;
@@ -19,7 +24,7 @@ export type TQuery = {
   submodel: string;
 };
 
-export function DropdownSearch() {
+export function HeroDropdown() {
   const [displayModel, setDisplayModel] = useState<TModelFitData>();
   const [query, setQuery] = useState<TQuery>({
     year: '',
@@ -133,17 +138,17 @@ export function DropdownSearch() {
 
   const handleSubmitDropdown = async () => {
     setLoading(true);
-    console.log(displayModel?.generation_default);
-    const response = await fetch('/api/pdp', {
-      method: 'POST',
-      body: JSON.stringify({
-        generation_default: displayModel?.generation_default,
-      }),
-    });
-    if (response.ok) {
-      console.log('response', response);
-      router.push(response.url);
-    } else {
+    const response = await fetchDropdownData(
+      displayModel?.generation_default ?? String(displayModel?.fk)
+    );
+    if (response.data) {
+      const { product_url_slug, year_generation, submodel1_slug } =
+        response.data[0];
+      let url = `${product_url_slug}/${year_generation}`;
+      if (submodel1_slug) {
+        url += `?submodel=${submodel1_slug}`;
+      }
+      router.push(url);
     }
   };
 
