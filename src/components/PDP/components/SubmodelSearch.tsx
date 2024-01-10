@@ -47,7 +47,7 @@ export function SubmodelSearch({
           aria-expanded={open}
           className="w-full h-[60px] justify-between"
         >
-          {value || 'Select car generation'}
+          {value || 'Select your car submodel'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

@@ -14,8 +14,12 @@ import { SubmodelSearch2nd } from './SubmodelSearch2nd';
 
 export default function SubDropdowns({
   modelData,
+  submodels,
+  secondSubmodels,
 }: {
   modelData: TProductData[];
+  submodels: string[];
+  secondSubmodels: string[];
 }) {
   const {
     selectedYear,
@@ -32,6 +36,10 @@ export default function SubDropdowns({
   const yearParam = searchParams?.get('year') ?? '';
   const submodelParam = searchParams?.get('submodel') ?? '';
   const submodelParam2nd = searchParams?.get('second_submodel') ?? '';
+
+  console.log(pathname);
+
+  const isYearInPath = pathname?.split('/').length === 5;
 
   console.log(searchParams);
 
@@ -81,24 +89,31 @@ export default function SubDropdowns({
   const hasSecondSubModel =
     modelData.filter((car) => car?.submodel2).length > 0;
 
+  console.log(secondSubmodels);
+
   return (
     <>
-      <YearSearch
-        setYear={setSelectedYear}
-        yearData={yearData}
-        yearParam={yearParam}
-      />
+      {!isYearInPath && (
+        <YearSearch
+          setYear={setSelectedYear}
+          yearData={yearData}
+          yearParam={yearParam}
+        />
+      )}
 
-      <SubmodelSearch
-        modelData={modelData}
-        setSelectedSubmodel={setSelectedSubmodel}
-        submodelParam={submodelParam}
-      />
-      {selectedSubmodel && (
+      {!!submodels.length && (
+        <SubmodelSearch
+          modelData={modelData}
+          setSelectedSubmodel={setSelectedSubmodel}
+          submodelParam={submodelParam}
+        />
+      )}
+      {secondSubmodels.length > 1 && (
         <SubmodelSearch2nd
           modelData={modelData}
           setSelectedSubmodel={setSelectedSecondSubmodel}
           submodelParam2nd={submodelParam2nd}
+          secondSubmodels={secondSubmodels}
         />
       )}
 

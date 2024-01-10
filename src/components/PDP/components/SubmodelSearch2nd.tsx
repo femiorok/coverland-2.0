@@ -21,17 +21,17 @@ export function SubmodelSearch2nd({
   setSelectedSubmodel,
   modelData,
   submodelParam2nd,
+  secondSubmodels,
 }: {
   modelData: TProductData[];
   setSelectedSubmodel: Dispatch<SetStateAction<string | null>>;
   submodelParam2nd: string | null;
+  secondSubmodels: string[];
 }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(() => submodelParam2nd ?? '');
 
-  const { uniqueSubmodel2 } = extractUniqueValues(modelData as TProductData[]);
-
-  if (!uniqueSubmodel2.length) return null;
+  console.log('secondSubmodels', secondSubmodels);
 
   return (
     <Popover open={open} onOpenChange={(open) => setOpen(open)}>
@@ -42,7 +42,7 @@ export function SubmodelSearch2nd({
           aria-expanded={open}
           className="w-full h-[60px] justify-between"
         >
-          {value ? value : 'Select car generation'}
+          {value ? value : 'Select your additional car submodel'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -51,7 +51,7 @@ export function SubmodelSearch2nd({
           <CommandInput placeholder="Enter Generation" />
           <CommandEmpty>No submodel found.</CommandEmpty>
           <CommandGroup className="overflow-scroll">
-            {uniqueSubmodel2.map((sub) => (
+            {secondSubmodels.map((sub) => (
               <CommandItem
                 key={`generation-${sub}`}
                 value={sub}

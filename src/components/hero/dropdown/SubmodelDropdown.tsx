@@ -1,46 +1,45 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { TQuery } from './HeroDropdown';
 import { TProductData } from '@/lib/db';
 
-export function MakeSearch({
+export function SubmodelDropdown({
   queryObj,
-  makeData,
+  submodelData,
   isLoading,
 }: {
   queryObj: {
     query: TQuery;
-    setQuery: React.Dispatch<React.SetStateAction<TQuery>>;
+    setQuery: Dispatch<SetStateAction<TQuery>>;
   };
-  makeData: string[];
+  submodelData: string[];
   isLoading: boolean;
 }) {
   const [value, setValue] = useState('');
-  const { setQuery, query } = queryObj;
-  const sortedData = makeData.sort((a, b) => a.localeCompare(b));
+  const { query, setQuery } = queryObj;
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     setValue(newValue);
-    setQuery((p) => ({ ...p, make: newValue }));
+    setQuery((p) => ({ ...p, submodel: newValue }));
   };
+
+  const isDisabled = !query.make || !query.year || !query.type;
 
   return (
     <select
       value={value}
       onChange={handleChange}
-      disabled={!query.type || !query.year}
+      disabled={isDisabled}
       className="text-lg rounded-lg  px-2"
     >
-      <option value="" disabled selected>
-        Select car make
-      </option>
+      <option value="">Select car model</option>
       {isLoading
         ? 'Loading...'
-        : sortedData.map((make) => (
-            <option key={make} value={make}>
-              {make}
+        : submodelData?.sort()?.map((submodel) => (
+            <option key={`model-${submodel}`} value={submodel}>
+              {submodel}
             </option>
           ))}
     </select>

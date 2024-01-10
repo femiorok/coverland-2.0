@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useState } from 'react';
 import { TProductData } from '@/lib/db';
-import { TQuery } from './DropdownSearch';
+import { TQuery } from './HeroDropdown';
 
 export function YearSearch({
   queryObj,
@@ -29,7 +29,7 @@ export function YearSearch({
       value={value}
       onChange={(event) => handleChange(event)}
       disabled={!queryObj.query.type}
-      className="w-[275px] h-[58px] text-lg rounded-lg  px-2"
+      className="text-lg rounded-lg  px-2"
     >
       <option value="">Select car year</option>
       {years.map((year) => (

@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
-import { TQuery } from './DropdownSearch';
+import { TQuery } from './HeroDropdown';
 import { TProductData } from '@/lib/db';
 
 export function ModelSearch({
@@ -32,7 +32,7 @@ export function ModelSearch({
       value={value}
       onChange={handleChange}
       disabled={isDisabled}
-      className="w-[275px] h-[58px] text-lg rounded-lg  px-2"
+      className="text-lg rounded-lg  px-2"
     >
       <option value="">Select car model</option>
       {isLoading

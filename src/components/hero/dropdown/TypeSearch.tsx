@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
-import { TQuery } from './DropdownSearch';
+import { TQuery } from './HeroDropdown';
 
 export function TypeSearch({
   queryObj,
@@ -26,7 +26,7 @@ export function TypeSearch({
     <select
       value={value}
       onChange={handleChange}
-      className="w-[275px] h-[58px] text-lg rounded-lg px-2"
+      className="text-lg rounded-lg px-2"
     >
       <option value="">Product Type</option>
       {types.map((type, i) => (
