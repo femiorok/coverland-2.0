@@ -29,9 +29,11 @@ export function YearSearch({
       value={value}
       onChange={(event) => handleChange(event)}
       disabled={!queryObj.query.type}
-      className="text-lg rounded-lg  px-2"
+      className="w-full h-[58px] text-lg text-[#1E1E1E] font-medium rounded px-4 bg-white border-4 border-transparent focus:border-[#BE1B1B] focus-visible:outline-0 focus-visible:outline-0 focus-visible:border-[#BE1B1B] focus-visible:border-4 visited:border-[#BE1B1B] visited:border-4"
     >
-      <option value="">Select car year</option>
+      <option value="" disabled selected>
+        2 Year
+      </option>
       {years.map((year) => (
         <option key={`year-${year}`} value={year.toString()}>
           {year}

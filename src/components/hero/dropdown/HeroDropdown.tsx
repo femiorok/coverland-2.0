@@ -153,28 +153,30 @@ export function HeroDropdown() {
   };
 
   return (
-    <div className="flex gap-2 flex-col md:flex-row justify-center relative font-medium w-full px-16 *:flex-1 ">
-      <TypeSearch queryObj={queryObj} />
-      <YearSearch queryObj={queryObj} />
-      <MakeSearch
-        queryObj={queryObj}
-        makeData={makeData}
-        isLoading={isLoading}
-      />
-      <ModelSearch
-        queryObj={queryObj}
-        modelData={modelData}
-        isLoading={isLoading}
-      />
-      {subModelData.length > 1 && (
-        <SubmodelDropdown
+    <div className="flex gap-4 md:gap-2 flex-col md:flex-row relative font-medium">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-2 md:flex-1">
+        <TypeSearch queryObj={queryObj} />
+        <YearSearch queryObj={queryObj} />
+        <MakeSearch
           queryObj={queryObj}
-          submodelData={subModelData}
+          makeData={makeData}
           isLoading={isLoading}
         />
-      )}
+        <ModelSearch
+          queryObj={queryObj}
+          modelData={modelData}
+          isLoading={isLoading}
+        />
+        {subModelData.length > 1 && (
+          <SubmodelDropdown
+            queryObj={queryObj}
+            submodelData={subModelData}
+            isLoading={isLoading}
+          />
+        )}
+      </div>
       <Button
-        className="h-[58px] max-w-[58px] text-lg"
+        className="h-[58px] text-lg rounded-lg border border-[#767676] md:border-[#BE1B1B] bg-[#767676] md:bg-[#BE1B1B]"
         onClick={handleSubmitDropdown}
       >
         {loading ? (

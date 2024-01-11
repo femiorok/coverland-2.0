@@ -2,160 +2,189 @@ import React from 'react';
 import Image from 'next/image';
 import Beach from '../../../public/images/security/security-beach.webp';
 import {
+  CheckSquare,
   CircleDollarSign,
   CloudRainWind,
   Shield,
   SunMedium,
   Umbrella,
 } from 'lucide-react';
-import { FaShippingFast } from 'react-icons/fa';
+import { FaCheckSquare, FaShippingFast } from 'react-icons/fa';
 import { RiSecurePaymentFill } from 'react-icons/ri';
-import { BsBoxSeamFill } from 'react-icons/bs';
+import {
+  BsBoxSeamFill,
+  BsCheckSquareFill,
+  BsFillCheckSquareFill,
+} from 'react-icons/bs';
+import { ImageCardBox } from '@/components/general';
+import OutdoorCoverImg from '/public/images/home/outdoor-cover.png';
+import IndoorCoverImg from '/public/images/home/indoor-cover.png';
+import WaterProofImg from '/public/images/home/oxf-waterproof.png';
+import { RoundCheckboxIcon } from '@/components/PDP/images';
+import CloudIcon from '@/images/home/cloud.png';
+import FeatherIcon from '@/images/home/feather.png';
+import UmbrellaIcon from '@/images/home/umbrella.png';
+import SettingsIcon from '@/images/home/settings.png';
 
 const SecuritySection = () => {
+  let featuredListArr = [
+    {
+      title: 'Weatherproof Car Covers',
+      description:
+        'It fully protects my car in all weather conditions. Built to be effective in all seasons.',
+      icon: UmbrellaIcon,
+    },
+    {
+      title: 'UV & Heatproof Car Covers',
+      description:
+        'Without heat accumulation, our covers reflect 100% of all UV rays.',
+      icon: SettingsIcon,
+    },
+    {
+      title: 'Scratchproof Car Covers',
+      description:
+        'Serving as a protective coat, our covers guard against scratches by kids, dirt and even cats.',
+      icon: FeatherIcon,
+    },
+    {
+      title: 'Hail, Strom, & Snowproof Car Covers',
+      description:
+        'Regardless of weather conditions, our covers are snowproof, waterproof and windproof.',
+      icon: CloudIcon,
+    },
+  ];
+  let checkListArr = [
+    { listItem: 'Luxury thick microfiber material.' },
+    { listItem: 'Indoor car covers & outdoor car covers.' },
+    {
+      listItem:
+        'Water-proof car cover with a shield for protection from water damage.',
+    },
+    {
+      listItem:
+        'Different types of car covers in varied sizes and color options.',
+    },
+    { listItem: 'Protection against damage from sun and UV rays.' },
+    { listItem: 'Windproof, easy buckle nylon straps and two small grommets.' },
+  ];
   return (
     <>
-      <section className="px-4 md:px-24 lg:px-20 xxl:px-0 w-screen h-auto bg-white flex flex-col max-w-[1440px] lg:pt-20">
-        <div className="flex flex-col xl:flex-row justify-center items-center ">
-          <div className="flex flex-col justify-center items-start h-full">
-            <div className="pb-20 lg:pb-10 pt-20 lg:pt-0 w-full">
-              <h1 className=" text-2xl uppercase font-extrabold md:text-5xl text-dark text-center xl:text-left">
-                Experience the Best Security
-              </h1>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-6">
-              <div className="flex flex-row w-full pb-8 lg:pb-10">
-                <div className="bg-offWhite flex flex-row justify-center items-center w-14 h-14 icon-shadow rounded-lg mr-8">
-                  <Umbrella size={30} color="#185CFF" />
-                </div>
-                <div className="flex flex-col justify-start items-start w-3/4">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark">
-                    Weatherproof
-                  </h2>
-                  <p className=" text-dark">
-                    It fully protects my car in all weather conditions. Built to
-                    be effective in all seasons.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row w-full pb-8 md:pb-10">
-                <div className="bg-offWhite flex flex-row justify-center items-center w-14 h-14 icon-shadow rounded-lg mr-8">
-                  <SunMedium size={30} color="#185CFF" />
-                </div>
-                <div className="flex flex-col justify-start items-start w-3/4">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark">
-                    UV & Heat Protection
-                  </h2>
-                  <p className=" text-dark">
-                    Without heat accumulation, our covers reflect 100% of all UV
-                    rays.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row w-full pb-8 md:pb-10">
-                <div className="bg-offWhite flex flex-row justify-center items-center w-14 h-14 icon-shadow rounded-lg mr-8">
-                  <Shield size={30} color="#185CFF" />
-                </div>
-                <div className="flex flex-col justify-start items-start w-3/4">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark">
-                    Scratchproof
-                  </h2>
-                  <p className=" text-dark">
-                    Serving as a protective coat, our covers guard against
-                    scratches by kids, dirt and even cats.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row w-full pb-4 lg:pb-0">
-                <div className="bg-offWhite flex flex-row justify-center items-center w-14 h-14 icon-shadow rounded-lg mr-8">
-                  <CloudRainWind size={30} color="#185CFF" />
-                </div>
-                <div className="flex flex-col justify-start items-start w-3/4">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark">
-                    Hail, Storm & Snow Protection
-                  </h2>
-                  <p className="text-dark text-base">
-                    Regardless of weather conditions, our covers are snowproof,
-                    waterproof and windproof.{' '}
-                  </p>
-                </div>
-              </div>
+      <section className="my-8 md:my-18 lg:my-28 py-8 md:py-18 lg:py-28 px-4 md:px-8 xl:px-16 bg-[#F9F9FB] flex flex-col gap-20 md:gap-32">
+        {/* Info Card 1 */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10 md:gap-20">
+          <ImageCardBox
+            title="Outdoor car covers"
+            btnText="shop now"
+            bgImage={OutdoorCoverImg.src}
+          />
+          <div className="flex flex-col items-stretch gap-8 lg:flex-1">
+            <h3
+              className="text-[#1A1A1A] font-black text-2xl md:text-3xl lg:text-[34px] uppercase"
+              style={{ lineHeight: '1.5' }}
+            >
+              Experience the best <br className="hidden lg:block" /> car cover
+              in the USA
+            </h3>
+            <div className="flex flex-col gap-4">
+              {featuredListArr.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="flex flex-col md:flex-row gap-2 md:gap-4 items-center"
+                  >
+                    <div className="md:flex-1">
+                      <Image
+                        src={item.icon}
+                        alt="title"
+                        width={87}
+                        height={87}
+                      />
+                    </div>
+                    <div className="flex flex-col items-center md:items-stretch gap-2 md:flex-[5]">
+                      <h6 className="text-lg text-[#1A1A1A] font-semibold capitalize">
+                        {item.title}
+                      </h6>
+                      <p className="text-base text-[#767676] font-normal text-center md:text-left">
+                        {' '}
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <div className="flex flex-col justify-end items-start object-cover pb-4 pt-4 md:pt-16 md:pb-0 w-full">
-            <Image
-              src={Beach}
-              className=" w-full rounded-xl"
-              alt="a fully-covered vehicle with a coverland car cover on it"
-            />
+        </div>
+        {/* Info Card 2 */}
+        <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-10 md:gap-20">
+          <div className="flex flex-col items-stretch gap-8 lg:flex-1">
+            <h3
+              className="text-[#1A1A1A] font-black text-2xl md:text-3xl lg:text-[34px] uppercase"
+              style={{ lineHeight: '1.5' }}
+            >
+              Custom-Fit Car Covers <br className="hidden lg:block" /> Designed
+              In The USA
+            </h3>
+            <p className="font-normal text-[#1A1A1A] text-base">
+              For every car enthusiast, owning a car is a considerable
+              investment. Therefore, investing some money and effort for its
+              protection is also an important step that involves buying premium
+              quality car cover that is best for providing complete protection
+              against extreme weather conditions. <br /> <br />
+              Now, the question is what kind of car cover is best for your
+              vehicle? If you have the privilege of a garage, you can use our
+              indoor car covers whereas if you have to park your cars outdoors,
+              you can benefit from our universal customizable car cover. All our
+              indoor and outdoor covers are custom made to be perfectly fitted,
+              durable, and cost-effective.
+            </p>
+          </div>
+          <ImageCardBox
+            title="Indoor car covers"
+            btnText="shop now"
+            bgImage={IndoorCoverImg.src}
+          />
+        </div>
+        {/* Info Card 3 */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10 md:gap-20">
+          <ImageCardBox
+            title="Waterproof car covers"
+            btnText="shop now"
+            bgImage={WaterProofImg.src}
+          />
+          <div className="flex flex-col items-stretch gap-8 lg:flex-1">
+            <h3
+              className="text-[#1A1A1A] font-black text-2xl md:text-3xl lg:text-[34px] uppercase"
+              style={{ lineHeight: '1.5' }}
+            >
+              Why Choose <br className="hidden lg:block" /> CoverLand Car
+              Covers?
+            </h3>
+            <div className="flex flex-col gap-4">
+              {checkListArr.map((item, index) => {
+                return (
+                  <div key={index} className="flex flex-row gap-4 items-center">
+                    <div className="md:flex-2">
+                      <RoundCheckboxIcon />
+                    </div>
+                    <p className="text-sm text-[#1A1A1A] font-normal md:flex-[5]">
+                      {' '}
+                      {item.listItem}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="font-normal text-[#1A1A1A] text-base">
+              Our top covers are specifically made to be closely fitted on your
+              vehicle in order to safeguard it from outside elements. With all
+              the above-mentioned features, keep in mind our custom-made strong
+              car covers ensure your car's safety. We also provide our customers
+              with free shipping and an easy 30-day return policy.
+            </p>
           </div>
         </div>
       </section>
-      <div className="px-4 md:px-24 lg:px-20 xxl:px-0 w-screen h-auto bg-white flex flex-col max-w-[1440px] pt-8 md:pt-20">
-        <div className="flex flex-col lg:flex-row justify-center items-start ">
-          <div className="flex flex-col justify-center items-start h-full">
-            <div className="pb-10 lg:pb-20 pt-0 w-full">
-              <h1 className=" text-2xl uppercase font-extrabold md:text-5xl text-dark text-center  xl:text-center">
-                Buy with confidence
-              </h1>
-            </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-8"'>
-              <div className="flex flex-row md:flex-col md:justify-start md:items-center w-full pb-8 lg:pb-0">
-                <CircleDollarSign size={55} color="#185CFF" />
-
-                <div className="flex flex-col justify-start items-start md:items-center w-full ml-8 md:ml-0">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark xl:py-4 text-left md:text-center">
-                    90-Day Money Back
-                  </h2>
-                  <p className=" text-dark text-base text-left md:text-center">
-                    Purchase confidently, knowing we offer a full 90-day
-                    money-back guarantee.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row md:flex-col md:justify-start md:items-center w-full pb-8 lg:pb-0">
-                <RiSecurePaymentFill size={55} color="#185CFF" />
-
-                <div className="flex flex-col justify-start items-start md:items-center w-full ml-8 md:ml-0">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark xl:py-4 text-left md:text-center">
-                    Secure Shopping
-                  </h2>
-                  <p className=" text-dark text-base text-left md:text-center">
-                    Rest easy with our commitment to the highest standards of
-                    secure shopping.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row md:flex-col md:justify-start md:items-center w-full pb-8 lg:pb-0">
-                <FaShippingFast size={55} color="#185CFF" />
-
-                <div className="flex flex-col justify-start items-start md:items-center w-full ml-8 md:ml-0">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark xl:py-4 text-left md:text-center whitespace-nowrap">
-                    Same-Day Processing
-                  </h2>
-                  <p className=" text-dark text-base text-left md:text-center">
-                    {`Place your order today, and we'll ensure immediate, same-day
-                    processing.`}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row md:flex-col md:justify-start md:items-center w-full pb-4 lg:pb-0">
-                <BsBoxSeamFill size={55} color="#185CFF" />
-
-                <div className="flex flex-col justify-start items-start md:items-center w-full ml-8 md:ml-0">
-                  <h2 className="text-xl lg:text-lg capitalize lg:uppercase font-semibold text-dark xl:py-4 text-left md:text-center">
-                    30-Day Free Returns
-                  </h2>
-                  <p className="text-dark text-base text-left md:text-center">
-                    Changed your mind? No worries; we offer free returns for 30
-                    days.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 };
