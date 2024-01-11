@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { DropdownSearch } from './dropdown/DropdownSearch';
 import bg from '/public/images/hero/home-hero-bg.png';
 import mobileBg from '/public/images/hero/home-hero-mobile-bg.png';
+import { HeroDropdown } from './dropdown/HeroDropdown';
 
 const HeroSection: React.FC = () => {
   const [bgImage, setBgImage] = useState<string>('');
@@ -37,7 +37,7 @@ const HeroSection: React.FC = () => {
           </div>
         </div>
         <div id="desktop-filter" className="pt-8 w-11/12">
-          <DropdownSearch />
+          <HeroDropdown />
         </div>
       </div>
     </section>

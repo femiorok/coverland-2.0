@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
-import { TQuery } from './DropdownSearch';
+import { TQuery } from './HeroDropdown';
 
 export function TypeSearch({
   queryObj,

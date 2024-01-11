@@ -1,4 +1,10 @@
-import { TProductData, fetchPDPData, fetchPDPDataWithQuery } from '@/lib/db';
+import {
+  TProductData,
+  fetchPDPData,
+  fetchPDPDataWithQuery,
+  getAllDefaultGenerations,
+} from '@/lib/db';
+import Image from 'next/image';
 import CarSelector from '@/components/PDP/CarSelector';
 
 import { redirect } from 'next/navigation';
@@ -7,7 +13,6 @@ import { ExtraProductDetails } from '@/components/PDP/OtherDetails';
 export type TPDPPathParams = { productType: string; product: string[] };
 
 export type TPDPQueryParams = {
-  year: string | undefined;
   submodel: string | undefined;
   second_submodel: string | undefined;
 };
@@ -19,7 +24,7 @@ export default async function ProductPDP({
   params: TPDPPathParams;
   searchParams: TPDPQueryParams;
 }) {
-  console.log('pathParams', pathParams);
+  const submodelParam = searchParams.submodel;
   if (
     pathParams.productType !== 'car-covers' &&
     pathParams.productType !== 'suv-covers' &&
@@ -30,70 +35,46 @@ export default async function ProductPDP({
   }
   let productData = [];
 
-  productData = searchParams.year
+  productData = submodelParam
     ? (await fetchPDPDataWithQuery(searchParams, pathParams)) ?? []
     : (await fetchPDPData(pathParams)) ?? [];
 
   if (!productData) return null;
-  const modelData = productData?.filter((item) => item.msrp);
-  console.log('modelData', modelData);
 
-  const hasSubmodels = modelData.some(
-    (model) => model.submodel1_slug || model.submodel2_slug
+  console.log(productData);
+
+  const submodels = Array.from(
+    new Set(
+      productData
+        ?.map((row) => row.submodel1)
+        .filter((row): row is string => Boolean(row))
+    )
   );
-  console.log('hasSubmodels', hasSubmodels);
 
-  const getUniqueSubmodel1 = () => {
-    const submodel1 = modelData.map((model) => model.submodel1_slug);
-    const uniqueSubmodel1 = [...new Set(submodel1)];
-    return uniqueSubmodel1;
-  };
+  const secondSubmodels = Array.from(
+    new Set(
+      productData
+        ?.map((row) => row.submodel2)
+        .filter((row): row is string => Boolean(row))
+    )
+  );
 
-  const getUniqueSubmodel2 = () => {
-    const submodel2 = modelData.map((model) => model.submodel2_slug);
-    const uniqueSubmodel2 = [...new Set(submodel2)];
-    return uniqueSubmodel2;
-  };
+  console.log(secondSubmodels);
+  console.log(submodels);
+  const modelData = productData?.filter((item) => item.msrp);
 
-  const uniqueSubmodel1 = getUniqueSubmodel1();
-  const uniqueSubmodel2 = getUniqueSubmodel2();
-
-  const submodelData = { uniqueSubmodel1, uniqueSubmodel2 };
-
-  console.log('submodelData', submodelData);
-
-  console.log('uniqueSubmodel1', uniqueSubmodel1);
-  console.log('uniqueSubmodel2', uniqueSubmodel2);
-
-  const modelDataByYear = searchParams.year
-    ? modelData.filter(
-        (model) =>
-          model?.year_range &&
-          model.year_range.includes(searchParams?.year ?? '2023')
-      )
-    : modelData;
-
-  const modelDataBySubmodel = searchParams.submodel
-    ? modelDataByYear.filter((model) => {
-        model.submodel1_slug === searchParams.submodel ??
-          model.submodel2_slug === searchParams.submodel;
-      })
-    : modelDataByYear;
-
-  console.log(modelDataBySubmodel, searchParams.submodel, modelDataByYear);
-
-  const dataByParams = !!modelDataBySubmodel?.length
-    ? modelDataBySubmodel
-    : modelDataByYear;
-
-  console.log(dataByParams);
+  if (modelData.length === 0) {
+    redirect('/');
+  }
 
   return (
     <>
       <CarSelector
-        modelData={dataByParams}
+        modelData={modelData}
         pathParams={pathParams}
-        submodelData={submodelData}
+        searchParams={searchParams}
+        submodels={submodels}
+        secondSubmodels={secondSubmodels}
       />
       <div
         id="product-details"
