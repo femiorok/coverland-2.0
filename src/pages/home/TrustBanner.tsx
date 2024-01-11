@@ -1,99 +1,53 @@
-import { Star } from 'lucide-react';
-import eBayTrustBanner from '../../../public/images/trust-banner/ebay.svg';
-import amazon from '../../../public/images/trust-banner/amazon.svg';
-import google from '../../../public/images/trust-banner/google.svg';
 import Image from 'next/image';
+import TrustBg from '/public/images/hero/trust-hero-bg.png';
+import RatingA from '@/images/home/rating-A.png';
+import GoogleRating from '@/images/home/google-rating.png';
+import FiveStar from '@/images/home/five-star.png';
 
 const TrustBanner = () => {
+  let trustArr = [
+    { id: 1, imgOne: RatingA },
+    { id: 2, text: '20-years of trust' },
+    { id: 3, imgOne: GoogleRating, imgTwo: FiveStar },
+  ];
   return (
-    <div
-      className="mt-20 h-auto lg:h-80 bg-foreground text-black flex flex-col justify-start items-center py-7 mb-0 text-center"
-      //   style={{
-      //     background: 'linear-gradient(90deg, #FF9400 0%, #FF9400 100%)',
-      //   }}
+    <section
+      className={`w-full md:max-w-[1440px] z-20 p-12 h-auto relative flex flex-col justify-center items-center py-8 relative overflow-hidden bg-cover md:bg-auto`}
+      style={{
+        backgroundImage: `url(${TrustBg.src})`,
+        backgroundRepeat: 'no-repeat',
+      }}
     >
-      <div>
-        <p className="text-white uppercase pt-3 text-md">
-          Thousands of Happy Customers
-        </p>
+      <div className="absolute top-0 bottom-0 left-0 right-0 -z-[1] h-full w-full bg-[#404040] opacity-90"></div>
+      <div className="grid lg:grid-cols-3 gap-12 md:gap-16">
+        <div className="block md:hidden">
+          <h4 className="font-black text-3xl lg:text-4xl xl:text-5xl text-white text-center capitalize">
+            20-years of trust
+          </h4>
+        </div>
+        {trustArr.map((item, index) => {
+          return (
+            <div
+              key={index}
+              className="flex flex-col items-center justify-center gap-2"
+            >
+              {item.imgOne && (
+                <Image width={159} src={item.imgOne} alt="rating" />
+              )}
+              {item.imgTwo && (
+                <Image width={159} src={item.imgTwo} alt="rating" />
+              )}
+
+              <div className="hidden md:block">
+                <h4 className="font-black text-3xl lg:text-4xl xl:text-5xl text-white text-center capitalize">
+                  {item.text}
+                </h4>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <div>
-        <p className="text-white font-black uppercase text-3xl pt-0">
-          20 years of trust
-        </p>
-      </div>
-      <div className="flex flex-row justify-center items-center pb-1">
-        <div>
-          <Star size={40} color="#FF9400" />
-        </div>
-        <div>
-          <Star size={40} color="#FF9400" />
-        </div>
-        <div>
-          <Star size={40} color="#FF9400" />
-        </div>
-        <div>
-          <Star size={40} color="#FF9400" />
-        </div>
-        <div>
-          <Star size={40} color="#FF9400" />
-        </div>
-      </div>
-      <div className="py-4">
-        <p className="text-white uppercase text-sm pb-4">
-          4.8 average star rating!
-        </p>
-      </div>
-      <div className="flex flex-col md:flex-row justify-center items-center w-full ">
-        <div className="rounded-full w-56 lg:w-64 h-14 bg-white flex flex-row justify-evenly items-center flex-nowrap ">
-          <div className="h-auto w-1/4 flex flex-row justify-center items-center">
-            <Image
-              src={eBayTrustBanner}
-              className="w-auto h-7 object-contain"
-              alt="coverland ebay 5-star reviews"
-            />
-          </div>{' '}
-          <div className="flex flex-col justify-center items-center">
-            <p className="text-s !leading-tight  text-dark font-bold">
-              99.9% Positive
-            </p>
-            <p className="text-xs !leading-tight text-dark">Feedback on eBay</p>
-          </div>
-        </div>
-        <div className="rounded-full w-56 lg:w-64 h-14  flex flex-row justify-evenly items-center flex-nowrap bg-[#FF9400] my-8 md:my-0 md:mx-8">
-          <div className="h-auto w-1/4 flex flex-row justify-center items-center">
-            <Image
-              src={amazon}
-              className="w-auto h-7 object-contain"
-              alt="coverland amazon 5-star reviews"
-            />
-          </div>{' '}
-          <div className="flex flex-col justify-center items-center">
-            <p className="!leading-tight text-dark font-bold">
-              Over 5k Positive
-            </p>
-            <p className="text-xs !leading-tight text-dark">
-              Reviews on Amazon
-            </p>
-          </div>
-        </div>
-        <div className="rounded-full w-56 lg:w-64 h-14 bg-white flex flex-row justify-evenly items-center flex-nowrap">
-          <div className="h-auto w-1/4 flex flex-row justify-center items-center">
-            <Image
-              src={google}
-              className="w-auto h-7 object-contain"
-              alt="coverland google 5-star reviews"
-            />
-          </div>{' '}
-          <div className="flex flex-col justify-center items-center">
-            <p className="text-s !leading-tight text-dark font-bold">
-              5-Star Rating
-            </p>
-            <p className="text-xs !leading-tight text-dark">on Google</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
   );
 };
 
