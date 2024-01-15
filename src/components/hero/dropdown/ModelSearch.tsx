@@ -32,9 +32,11 @@ export function ModelSearch({
       value={value}
       onChange={handleChange}
       disabled={isDisabled}
-      className="text-lg rounded-lg  px-2"
+      className="w-full h-[58px] text-lg text-[#1E1E1E] font-medium rounded px-4 bg-white border-4 border-transparent focus:border-[#BE1B1B] focus-visible:outline-0 focus-visible:outline-0 focus-visible:border-[#BE1B1B] focus-visible:border-4 visited:border-[#BE1B1B] visited:border-4"
     >
-      <option value="">Select car model</option>
+      <option value="" disabled selected>
+        4 Model
+      </option>
       {isLoading
         ? 'Loading...'
         : modelData?.sort()?.map((model) => (
